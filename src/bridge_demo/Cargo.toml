@@ -1,0 +1,10 @@
+[package]
+name = "bridge_demo"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+k3_ggml_bridge = { path = "../k3_ggml_bridge" }
+
+[profile.release]
+debug = true

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /data/codes/OS-train-26fall/hera-rt-lab/tools/rustup/toolchains/nightly-2026-05-28-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-ar "$@"

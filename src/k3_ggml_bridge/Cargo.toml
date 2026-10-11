@@ -1,0 +1,11 @@
+[package]
+name = "k3_ggml_bridge"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "k3_ggml_bridge"
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+k3_ai_runtime = { path = "../k3_aiRuntime", package = "k3_aiRuntime" }
