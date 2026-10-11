@@ -1,0 +1,51 @@
+root@starry:/root # /root/bridge_demo
+[ 32.153399 0:59 k3_aiScheduler::scheduler:71] scheduler initialized, worker thread should be started
+
+[ 32.290821 10:60 k3_aiScheduler::scheduler:105] run node: node_id=0, op=KernelOp(1)
+
+[ 32.292407 10:60 k3_kernel_backend:111] k3_run_kernel: node_id=0, op=KernelOp(1), target_hint=1
+
+[ 32.293401 10:60 k3_kernel_backend::matmul:119] run mutmal in cpu
+
+[ 32.294585 10:60 k3_kernel_backend::matmul:163] [kernel backend matmul: log]:
+
+[ 32.297803 10:60 k3_kernel_backend::matmul:164]   shape: 2x3 @ 3x2 -> 2x2
+
+[ 32.298544 10:60 k3_kernel_backend::matmul:165]   batch: 1
+
+[ 32.299151 10:60 k3_kernel_backend::matmul:168]   cpu matmul output (2x2):
+
+[ 32.303908 10:60 k3_kernel_backend::matmul:176]     [ 58.0 64.0 ]
+
+[ 32.304754 10:60 k3_kernel_backend::matmul:176]     [ 139.0 154.0 ]
+
+[ 32.305469 10:60 k3_aiScheduler::scheduler:115] k3_run_kernel success: node_id=0, op=KernelOp(1)
+
+[ 32.306607 10:60 k3_aiScheduler::scheduler:129] task completed, token=1261633536
+
+bridge_demo case1 row-major 2x3@3x2: rc=1 out=[58.0, 64.0, 139.0, 154.0] expect=[58.0, 64.0, 139.0, 154.0] => PASS
+[ 32.629674 10:60 k3_aiScheduler::scheduler:105] run node: node_id=0, op=KernelOp(1)
+
+[ 32.632812 10:60 k3_kernel_backend:111] k3_run_kernel: node_id=0, op=KernelOp(1), target_hint=1
+
+[ 32.633797 10:60 k3_kernel_backend::matmul:119] run mutmal in cpu
+
+[ 32.634604 10:60 k3_kernel_backend::matmul:163] [kernel backend matmul: log]:
+
+[ 32.635249 10:60 k3_kernel_backend::matmul:164]   shape: 2x3 @ 3x2 -> 2x2
+
+[ 32.636026 10:60 k3_kernel_backend::matmul:165]   batch: 1
+
+[ 32.636715 10:60 k3_kernel_backend::matmul:168]   cpu matmul output (2x2):
+
+[ 32.637408 10:60 k3_kernel_backend::matmul:176]     [ 58.0 64.0 ]
+
+[ 32.638038 10:60 k3_kernel_backend::matmul:176]     [ 139.0 154.0 ]
+
+[ 32.638662 10:60 k3_aiScheduler::scheduler:115] k3_run_kernel success: node_id=0, op=KernelOp(1)
+
+[ 32.639561 10:60 k3_aiScheduler::scheduler:129] task completed, token=1261633537
+
+bridge_demo case2 rhs-transposed:    rc=1 out=[58.0, 64.0, 139.0, 154.0] expect=[58.0, 64.0, 139.0, 154.0] => PASS
+bridge_demo: ALL PASS
+

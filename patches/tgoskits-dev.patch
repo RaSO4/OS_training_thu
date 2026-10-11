@@ -1,0 +1,81 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 5afdc94..26219dc 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -4586,7 +4586,7 @@ dependencies = [
+  "k3_kernel_backend",
+  "log",
+  "ov-channels",
+- "spin 0.12.1",
++ "spin 0.12.3",
+ ]
+ 
+ [[package]]
+@@ -7723,9 +7723,9 @@ dependencies = [
+ 
+ [[package]]
+ name = "spin"
+-version = "0.12.1"
++version = "0.12.3"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "bd5231412d905519dca6a5deb0327d407be68d6c941feec004533401d3a0a715"
++checksum = "0134f9043ed38b087ac4f7d4af44c79e2c9e5094421fe3164f435ce585953b10"
+ dependencies = [
+  "lock_api",
+ ]
+diff --git a/os/StarryOS/kernel/Cargo.toml b/os/StarryOS/kernel/Cargo.toml
+index 7cce3cd..afe98d5 100644
+--- a/os/StarryOS/kernel/Cargo.toml
++++ b/os/StarryOS/kernel/Cargo.toml
+@@ -70,8 +70,8 @@ ax-feat = { workspace = true, features = [
+ 
+ 
+ ov-channels = { version = "0.2" }
+-k3_aiUabi = {path = "/home/inkbottle/othersrc/k3x-HERA-RT/k3_aiUabi"}
+-k3_aiScheduler = {path = "/home/inkbottle/othersrc/k3x-HERA-RT/k3_aiScheduler"}
++k3_ai_uabi = {path = "../../../../k3x-HERA-RT/k3_aiUabi", package = "k3_aiUabi"}
++k3_ai_scheduler = {path = "../../../../k3x-HERA-RT/k3_aiScheduler", package = "k3_aiScheduler"}
+ 
+ ax-alloc = { workspace = true }
+ ax-config.workspace = true
+diff --git a/os/StarryOS/kernel/src/pseudofs/dev/k3_airunner.rs b/os/StarryOS/kernel/src/pseudofs/dev/k3_airunner.rs
+index bbf25cb..c2b30ce 100644
+--- a/os/StarryOS/kernel/src/pseudofs/dev/k3_airunner.rs
++++ b/os/StarryOS/kernel/src/pseudofs/dev/k3_airunner.rs
+@@ -9,8 +9,8 @@ use ax_runtime::hal::{
+ use ax_sync::spin::SpinNoIrq;
+ use ax_task::{AxCpuMask, current, spawn};
+ use axfs_ng_vfs::{DeviceId, NodeFlags, VfsError, VfsResult};
+-use k3_aiScheduler::{K3SchedulerOps, scheduler::run_graph};
+-use k3_aiUabi::{AI_ABI_VERSION, AiGraphSubmitEntry, GraphSubmitKind};
++use k3_ai_scheduler::{K3SchedulerOps, scheduler::run_graph};
++use k3_ai_uabi::{AI_ABI_VERSION, AiGraphSubmitEntry, GraphSubmitKind};
+ use ov_channels::{ChannelId, SharedMemory};
+ 
+ use crate::{
+@@ -38,7 +38,7 @@ pub const K3_AIRUNNER_CHANNEL_COUNT: usize = 2;
+ // 这层控制不只是“设置亲和性”，还要把 X100/A100 的核心类型语义带进调度器，
+ // 防止已经使用某类向量/IME 状态的线程跨到另一类核心上运行。
+ 
+-// 必须和用户态 `k3_aiUabi::kd_uring::K3AiChannelBuildParam` 保持一致。
++// 必须和用户态 `k3_ai_uabi::kd_uring::K3AiChannelBuildParam` 保持一致。
+ #[repr(C)]
+ #[derive(Clone, Copy, Default)]
+ pub struct K3AiChannelBuildParam {
+@@ -536,13 +536,13 @@ impl DeviceOps for K3AiRunner {
+                     }
+ 
+                     let parsed_graph =
+-                        k3_aiUabi::AiGraphParser::parse(&blob_slice).expect("parse fail");
+-                    use k3_aiScheduler::kd_kring::resolve_parsed_graph;
++                        k3_ai_uabi::AiGraphParser::parse(&blob_slice).expect("parse fail");
++                    use k3_ai_scheduler::kd_kring::resolve_parsed_graph;
+                     let task_link = resolve_parsed_graph(0, &parsed_graph).expect("parse fail");
+ 
+                     // 我们在这里必须将用户的tensor映射为内核虚拟地址
+ 
+-                    use k3_aiUabi::AiTensorDesc;
++                    use k3_ai_uabi::AiTensorDesc;
+                     // 遍历 AiGraphNode
+                     for node in task_link.iter() {
+                         info!("I received the node:");

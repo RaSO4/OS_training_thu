@@ -1,0 +1,5 @@
+#!/bin/sh
+# 自包含 qemu wrapper: 用 qemu-alpine mini root 的 musl loader 运行; -L 指向 ROM 目录
+ROOT=/data/codes/OS-train-26fall/hera-rt-lab/tools/qemu-alpine
+export LD_LIBRARY_PATH=$ROOT/usr/lib:$ROOT/lib
+exec $ROOT/lib/ld-musl-x86_64.so.1 $ROOT/usr/bin/qemu-system-riscv64 -L $ROOT/usr/share/qemu "$@"

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/clang --target=riscv64-unknown-linux-musl -isystem /data/codes/OS-train-26fall/hera-rt-lab/tools/riscv64-musl-headers/usr/include "$@"

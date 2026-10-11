@@ -1,0 +1,74 @@
+root@starry:/root # ls -la /dev/k3_airunner
+crw-rw-rw-    1 root     root      240,  10 Jan  1  1970 /dev/k3_airunner
+root@starry:/root # /root/k3_test
+k3_test: channel built, va=0x7d000, size=0x10400
+k3_test: submitting DAG graph (a || b) -> d
+[ 41.143208 0:60 k3_aiScheduler::scheduler:71] scheduler initialized, worker thread should be started
+
+[ 41.271299 10:61 k3_aiScheduler::scheduler:105] run node: node_id=0, op=KernelOp(1)
+
+[ 41.272653 10:61 k3_kernel_backend:111] k3_run_kernel: node_id=0, op=KernelOp(1), target_hint=1
+
+[ 41.273812 10:61 k3_kernel_backend::matmul:119] run mutmal in cpu
+
+[ 41.275181 10:61 k3_kernel_backend::matmul:163] [kernel backend matmul: log]:
+
+[ 41.278303 10:61 k3_kernel_backend::matmul:164]   shape: 2x3 @ 3x2 -> 2x2
+
+[ 41.278996 10:61 k3_kernel_backend::matmul:165]   batch: 1
+
+[ 41.279560 10:61 k3_kernel_backend::matmul:168]   cpu matmul output (2x2):
+
+[ 41.282641 10:61 k3_kernel_backend::matmul:176]     [ 1.0 2.0 ]
+
+[ 41.283711 10:61 k3_kernel_backend::matmul:176]     [ 4.0 5.0 ]
+
+[ 41.285797 10:61 k3_aiScheduler::scheduler:115] k3_run_kernel success: node_id=0, op=KernelOp(1)
+
+[ 41.287579 10:61 k3_aiScheduler::scheduler:105] run node: node_id=1, op=KernelOp(1)
+
+[ 41.288728 10:61 k3_kernel_backend:111] k3_run_kernel: node_id=1, op=KernelOp(1), target_hint=1
+
+[ 41.289696 10:61 k3_kernel_backend::matmul:119] run mutmal in cpu
+
+[ 41.290304 10:61 k3_kernel_backend::matmul:163] [kernel backend matmul: log]:
+
+[ 41.290925 10:61 k3_kernel_backend::matmul:164]   shape: 2x2 @ 2x3 -> 2x3
+
+[ 41.291501 10:61 k3_kernel_backend::matmul:165]   batch: 1
+
+[ 41.292014 10:61 k3_kernel_backend::matmul:168]   cpu matmul output (2x3):
+
+[ 41.292724 10:61 k3_kernel_backend::matmul:176]     [ 2.0 4.0 6.0 ]
+
+[ 41.293991 10:61 k3_kernel_backend::matmul:176]     [ 8.0 10.0 12.0 ]
+
+[ 41.294637 10:61 k3_aiScheduler::scheduler:115] k3_run_kernel success: node_id=1, op=KernelOp(1)
+
+[ 41.295361 10:61 k3_aiScheduler::scheduler:105] run node: node_id=2, op=KernelOp(1)
+
+[ 41.296012 10:61 k3_kernel_backend:111] k3_run_kernel: node_id=2, op=KernelOp(1), target_hint=1
+
+[ 41.296817 10:61 k3_kernel_backend::matmul:119] run mutmal in cpu
+
+[ 41.297373 10:61 k3_kernel_backend::matmul:163] [kernel backend matmul: log]:
+
+[ 41.298067 10:61 k3_kernel_backend::matmul:164]   shape: 2x2 @ 2x3 -> 2x3
+
+[ 41.298666 10:61 k3_kernel_backend::matmul:165]   batch: 1
+
+[ 41.299180 10:61 k3_kernel_backend::matmul:168]   cpu matmul output (2x3):
+
+[ 41.299843 10:61 k3_kernel_backend::matmul:176]     [ 18.0 24.0 30.0 ]
+
+[ 41.300472 10:61 k3_kernel_backend::matmul:176]     [ 48.0 66.0 84.0 ]
+
+[ 41.301056 10:61 k3_aiScheduler::scheduler:115] k3_run_kernel success: node_id=2, op=KernelOp(1)
+
+[ 41.301884 10:61 k3_aiScheduler::scheduler:129] task completed, token=42
+
+d result (2×3):
+  [  18.0  24.0  30.0 ]
+  [  48.0  66.0  84.0 ]
+continue , current avoid kernel access user addr
+(^C 该测试的图后保活阶段会挂起, 属已知行为)

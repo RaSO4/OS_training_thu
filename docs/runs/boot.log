@@ -1,0 +1,293 @@
+
+OpenSBI v1.5.1
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name             : riscv-virtio,qemu
+Platform Features         : medeleg
+Platform HART Count       : 16
+Platform IPI Device       : aclint-mswi
+Platform Timer Device     : aclint-mtimer @ 10000000Hz
+Platform Console Device   : uart8250
+Platform HSM Device       : ---
+Platform PMU Device       : ---
+Platform Reboot Device    : syscon-reboot
+Platform Shutdown Device  : syscon-poweroff
+Platform Suspend Device   : ---
+Platform CPPC Device      : ---
+Firmware Base             : 0x80000000
+Firmware Size             : 486 KB
+Firmware RW Offset        : 0x40000
+Firmware RW Size          : 230 KB
+Firmware Heap Offset      : 0x67000
+Firmware Heap Size        : 74 KB (total), 4 KB (reserved), 12 KB (used), 57 KB (free)
+Firmware Scratch Size     : 4096 B (total), 416 B (used), 3680 B (free)
+Runtime SBI Version       : 2.0
+
+Domain0 Name              : root
+Domain0 Boot HART         : 1
+Domain0 HARTs             : 0*,1*,2*,3*,4*,5*,6*,7*,8*,9*,10*,11*,12*,13*,14*,15*
+Domain0 Region00          : 0x0000000000100000-0x0000000000100fff M: (I,R,W) S/U: (R,W)
+Domain0 Region01          : 0x0000000010000000-0x0000000010000fff M: (I,R,W) S/U: (R,W)
+Domain0 Region02          : 0x0000000002000000-0x000000000200ffff M: (I,R,W) S/U: ()
+Domain0 Region03          : 0x0000000080000000-0x000000008003ffff M: (R,X) S/U: ()
+Domain0 Region04          : 0x0000000080040000-0x000000008007ffff M: (R,W) S/U: ()
+Domain0 Region05          : 0x000000000c400000-0x000000000c5fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region06          : 0x000000000c000000-0x000000000c3fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region07          : 0x0000000000000000-0xffffffffffffffff M: () S/U: (R,W,X)
+Domain0 Next Address      : 0x0000000080200000
+Domain0 Next Arg1         : 0x00000000bfe00000
+Domain0 Next Mode         : S-mode
+Domain0 SysReset          : yes
+Domain0 SysSuspend        : yes
+
+Boot HART ID              : 1
+Boot HART Domain          : root
+Boot HART Priv Version    : v1.12
+Boot HART Base ISA        : rv64imafdcvh
+Boot HART ISA Extensions  : sstc,zicntr,zihpm,zicboz,zicbom,sdtrig,svadu
+Boot HART PMP Count       : 16
+Boot HART PMP Granularity : 2 bits
+Boot HART PMP Address Bits: 54
+Boot HART MHPM Info       : 16 (0x0007fff8)
+Boot HART Debug Triggers  : 2 triggers
+Boot HART MIDELEG         : 0x0000000000001666
+Boot HART MEDELEG         : 0x0000000000f0b509
+RISC-V64 SBI kernel entry.
+
+VM Load @0x80200000
+
+VM Load Offset: 0x100200000
+
+Memory Map:
+
+  Rsv    0x00000080000000 - 0x00000080080000 (512 KiB)
+
+  Free   0x00000080080000 - 0x00000080200000 (1.5 MiB)
+
+  KImg   0x00000080200000 - 0x00000081000000 (14 MiB)
+
+  Free   0x00000081000000 - 0x00000180000000 (3.98 GiB)
+
+Initialize RAM allocator: 0x81000000..0x180000000
+
+Initializing per-CPU data
+
+Per-CPU data one cpu size: 0x41000 bytes
+
+Total per-CPU data size for secondary CPUs: 0x410000 bytes (16 CPUs)
+
+Flushed RAM used range to memory map: 0x81000000..0x81006000, current: 0x81006000
+
+Flushed RAM used range to memory map: 0x81006000..0x81416000, current: 0x81416000
+
+Per-CPU data allocated at 0x81006000 - 0x81416000
+
+Initializing per-CPU RAM for CPU0 - hard id 0x0 @ 0x81006000
+
+Initializing per-CPU RAM for CPU1 - hard id 0x1 @ 0x81047000
+
+Initializing per-CPU RAM for CPU2 - hard id 0x2 @ 0x81088000
+
+Initializing per-CPU RAM for CPU3 - hard id 0x3 @ 0x810c9000
+
+Initializing per-CPU RAM for CPU4 - hard id 0x4 @ 0x8110a000
+
+Initializing per-CPU RAM for CPU5 - hard id 0x5 @ 0x8114b000
+
+Initializing per-CPU RAM for CPU6 - hard id 0x6 @ 0x8118c000
+
+Initializing per-CPU RAM for CPU7 - hard id 0x7 @ 0x811cd000
+
+Initializing per-CPU RAM for CPU8 - hard id 0x8 @ 0x8120e000
+
+Initializing per-CPU RAM for CPU9 - hard id 0x9 @ 0x8124f000
+
+Initializing per-CPU RAM for CPU10 - hard id 0xa @ 0x81290000
+
+Initializing per-CPU RAM for CPU11 - hard id 0xb @ 0x812d1000
+
+Initializing per-CPU RAM for CPU12 - hard id 0xc @ 0x81312000
+
+Initializing per-CPU RAM for CPU13 - hard id 0xd @ 0x81353000
+
+Initializing per-CPU RAM for CPU14 - hard id 0xe @ 0x81394000
+
+Initializing per-CPU RAM for CPU15 - hard id 0xf @ 0x813d5000
+
+CPU0 - hard id 0x0, stack top @0x81047000, stack top virt @0xffffffe081047000, entry virt @0xffffffff8030ea82
+
+CPU1 - hard id 0x1, stack top @0x81088000, stack top virt @0xffffffe081088000, entry virt @0xffffffff8030ea82
+
+CPU2 - hard id 0x2, stack top @0x810c9000, stack top virt @0xffffffe0810c9000, entry virt @0xffffffff8030ea82
+
+CPU3 - hard id 0x3, stack top @0x8110a000, stack top virt @0xffffffe08110a000, entry virt @0xffffffff8030ea82
+
+CPU4 - hard id 0x4, stack top @0x8114b000, stack top virt @0xffffffe08114b000, entry virt @0xffffffff8030ea82
+
+CPU5 - hard id 0x5, stack top @0x8118c000, stack top virt @0xffffffe08118c000, entry virt @0xffffffff8030ea82
+
+CPU6 - hard id 0x6, stack top @0x811cd000, stack top virt @0xffffffe0811cd000, entry virt @0xffffffff8030ea82
+
+CPU7 - hard id 0x7, stack top @0x8120e000, stack top virt @0xffffffe08120e000, entry virt @0xffffffff8030ea82
+
+CPU8 - hard id 0x8, stack top @0x8124f000, stack top virt @0xffffffe08124f000, entry virt @0xffffffff8030ea82
+
+CPU9 - hard id 0x9, stack top @0x81290000, stack top virt @0xffffffe081290000, entry virt @0xffffffff8030ea82
+
+CPU10 - hard id 0xa, stack top @0x812d1000, stack top virt @0xffffffe0812d1000, entry virt @0xffffffff8030ea82
+
+CPU11 - hard id 0xb, stack top @0x81312000, stack top virt @0xffffffe081312000, entry virt @0xffffffff8030ea82
+
+CPU12 - hard id 0xc, stack top @0x81353000, stack top virt @0xffffffe081353000, entry virt @0xffffffff8030ea82
+
+CPU13 - hard id 0xd, stack top @0x81394000, stack top virt @0xffffffe081394000, entry virt @0xffffffff8030ea82
+
+CPU14 - hard id 0xe, stack top @0x813d5000, stack top virt @0xffffffe0813d5000, entry virt @0xffffffff8030ea82
+
+CPU15 - hard id 0xf, stack top @0x81416000, stack top virt @0xffffffe081416000, entry virt @0xffffffff8030ea82
+
+Mapping early memory regions...
+
+Ram                 : [0x0000000080000000, 0x0000000180000000) -> [0x0000000080000000, 0x0000000180000000) (4 GiB)
+
+Ram                 : [0xffffffc080000000, 0xffffffc180000000) -> [0x0000000080000000, 0x0000000180000000) (4 GiB)
+
+KImage              : [0xffffffff80000000, 0xffffffff80e00000) -> [0x0000000080200000, 0x0000000081000000) (14 MiB)
+
+PerCpu              : [0xffffffe081006000, 0xffffffe081416000) -> [0x0000000081006000, 0x0000000081416000) (4.06 MiB)
+
+Boot page table at physical address: 0x81416000
+
+MMU Entry point at physical address: 0x8050d256
+
+Enabling MMU...
+
+MMU enabled, jumping to 0xffffffff8030d256, sp=0xffffffe081088000
+
+Trap vector at 0xffffffff8030c284
+
+Memory Map:
+
+  Rsv    0x00000080000000 - 0x00000080080000 (512 KiB)
+
+  Free   0x00000080080000 - 0x00000080200000 (1.5 MiB)
+
+  KImg   0x00000080200000 - 0x00000081000000 (14 MiB)
+
+  Rsv    0x00000081000000 - 0x00000081006000 (24 KiB)
+
+  PerCPU 0x00000081006000 - 0x00000081416000 (4.06 MiB)
+
+  Rsv    0x00000081416000 - 0x0000008242b000 (16.08 MiB)
+
+  Free   0x0000008242b000 - 0x00000180000000 (3.96 GiB)
+
+Jumping to main entry point at 0xffffffff803056d2 with SP 0xffffffe081088000
+
+
+
+       d8888                            .d88888b.   .d8888b.
+
+      d88888                           d88P" "Y88b d88P  Y88b
+
+     d88P888                           888     888 Y88b.
+
+    d88P 888 888d888  .d8888b  .d88b.  888     888  "Y888b.
+
+   d88P  888 888P"   d88P"    d8P  Y8b 888     888     "Y88b.
+
+  d88P   888 888     888      88888888 888     888       "888
+
+ d8888888888 888     Y88b.    Y8b.     Y88b. .d88P Y88b  d88P
+
+d88P     888 888      "Y8888P  "Y8888   "Y88888P"   "Y8888P"
+
+
+
+arch = riscv64
+
+platform = riscv-virtio,qemu
+
+target = riscv64gc-unknown-none-elf
+
+build_mode = 
+
+log_level = warn
+
+backtrace = false
+
+smp = 16
+
+
+
+Boot at 2026-10-11 05:49:39.053818700 UTC
+
+
+
+[  1.221093 ax_fs_ng::block::runtime::device:1249] rdif filesystem block device virtio-blk exposes no IRQ source
+
+[  1.222724 ax_fs_ng::block::runtime::device:1230] rdif filesystem block device virtio-blk falls back to polling without IRQ: AxErrorKind::Unsupported
+
+[  1.287097 ax_display:28]   No display device found!
+
+[  1.335972 ax_net::service:806] eth0: DHCP acquired address 10.0.2.15/24
+
+[  1.338597 ax_net::service:808] eth0: DHCP router 10.0.2.2
+
+[  1.341230 ax_net:446]   No vsock device found!
+
+Initialized 6 tracepoints
+
+kmod subsystem initialized
+
+[  1.673731 1:2 starry_kernel::pseudofs::dev::tty::serial:234] SerialRegistry::discover: take_serial_devices returned 1 device(s)
+
+[  1.674891 1:2 starry_kernel::pseudofs::dev::tty::serial:239]   serial[0]: name=NS16550 UART, path=/soc/serial@10000000, alias=None, irq=Some(Source(FdtInterrupt(FdtIrqSpec { controller: 33, cells: [10] })))
+
+[  1.678049 1:2 starry_kernel::pseudofs::dev::tty::serial:251] SerialRegistry::discover: assigned ttyS numbers = [Some(0)]
+
+[  1.796721 1:2 starry_kernel::pseudofs::dev::tty::serial:264] SerialRegistry::discover: ttyS0 created, device_id=34
+
+[  1.798765 1:2 starry_kernel::pseudofs::dev::tty::serial:282] SerialRegistry::discover: candidates = [(0, 34)]
+
+[  1.800322 1:2 somehal::boot_console:18] console device_id: bootargs cmdline = None
+
+[  1.801063 1:2 somehal::boot_console:25] console device_id: no console= in bootargs, trying ACPI SPCR...
+
+[  1.801943 1:2 somehal::boot_console:27] console device_id: ACPI SPCR result = None
+
+[  1.802775 1:2 somehal::boot_console:31] console device_id: trying FDT /chosen/stdout-path...
+
+[  1.804968 1:2 somehal::boot_console:33] console device_id: FDT stdout-path result = Some(34)
+
+[  1.805955 1:2 starry_kernel::pseudofs::dev::tty::serial:290] SerialRegistry::discover: hal::console::device_id() = Ok(34)
+
+[  1.806996 1:2 starry_kernel::pseudofs::dev::tty::serial:777] select_console_candidate: searching for device_id=34 among 1 candidate(s)
+
+[  1.808146 1:2 starry_kernel::pseudofs::dev::tty::serial:786] select_console_candidate: matched candidate[0] -> SelectedDevice
+
+[  1.809163 1:2 starry_kernel::pseudofs::dev::tty::serial:292] SerialRegistry::discover: select_console_candidate = Some(SelectedDevice(0))
+
+[  2.350914 1:2 starry_kernel::entry:72] entry::init: attempting to bind_console_to PID 1
+
+[  2.355641 1:2 starry_kernel::entry:76] entry::init: bind_console_to succeeded
+
+Welcome to Starry OS!
+USER=root
+HOSTNAME=starry
+SHLVL=1
+HOME=/root
+TERM=xterm-256color
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PWD=/
+
+Use apk to install packages.
+
+root@starry:/root # 

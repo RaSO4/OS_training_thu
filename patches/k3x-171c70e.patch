@@ -1,0 +1,188 @@
+diff --git a/k3_aiRuntime/Cargo.toml b/k3_aiRuntime/Cargo.toml
+index 6303134..d1dd17d 100644
+--- a/k3_aiRuntime/Cargo.toml
++++ b/k3_aiRuntime/Cargo.toml
+@@ -6,4 +6,4 @@ edition = "2024"
+ [dependencies]
+ lazy_static = "1.5.0"
+ ov-channels = { version = "0.2" }
+-k3_aiUabi = { path = "../k3_aiUabi" }
++k3_ai_uabi = { path = "../k3_aiUabi", package = "k3_aiUabi" }
+diff --git a/k3_aiRuntime/src/fronted/kd_uring.rs b/k3_aiRuntime/src/fronted/kd_uring.rs
+index 60b46d9..83b3c4d 100644
+--- a/k3_aiRuntime/src/fronted/kd_uring.rs
++++ b/k3_aiRuntime/src/fronted/kd_uring.rs
+@@ -20,8 +20,8 @@ use std::{
+ use lazy_static::lazy_static;
+ use ov_channels::{ChannelId, Message, Receiver, Sender, SharedMemory};
+ use crate::fronted::{AI_ABI_VERSION, AiGraphSubmitEntry};
+-use k3_aiUabi::*;
+-use k3_aiUabi::error::AiRuntimeErr;
++use k3_ai_uabi::*;
++use k3_ai_uabi::error::AiRuntimeErr;
+ 
+ 
+ // 共享内存请求/返回参数。
+diff --git a/k3_aiRuntime/src/fronted/mod.rs b/k3_aiRuntime/src/fronted/mod.rs
+index 9cfdfd0..51e040b 100644
+--- a/k3_aiRuntime/src/fronted/mod.rs
++++ b/k3_aiRuntime/src/fronted/mod.rs
+@@ -6,7 +6,7 @@
+ pub mod kd_uring;
+ pub mod tensormanager;
+ 
+-// ── 从 k3_aiUabi 重导出 ──────────────────────────────────────────
++// ── 从 k3_ai_uabi 重导出 ──────────────────────────────────────────
+ 
+-pub use k3_aiUabi::*;
++pub use k3_ai_uabi::*;
+ pub use tensormanager::{Tensor, TensorManager};
+diff --git a/k3_aiRuntime/src/fronted/tensormanager.rs b/k3_aiRuntime/src/fronted/tensormanager.rs
+index 0e8302f..7095d65 100644
+--- a/k3_aiRuntime/src/fronted/tensormanager.rs
++++ b/k3_aiRuntime/src/fronted/tensormanager.rs
+@@ -4,8 +4,8 @@
+ //! `TensorManager` 负责分配一块稳定的用户态 buffer，并生成配套 `AiTensorDesc`。
+ 
+ use super::kd_uring::MmapMemory;
+-use k3_aiUabi::{AiDtype, AiTensorDesc, AiTensorFormat, AiTensorLayout, tensor_size_bytes};
+-use k3_aiUabi::error::AiRuntimeErr;
++use k3_ai_uabi::{AiDtype, AiTensorDesc, AiTensorFormat, AiTensorLayout, tensor_size_bytes};
++use k3_ai_uabi::error::AiRuntimeErr;
+ 
+ /// 用户态 tensor 句柄。
+ ///
+diff --git a/k3_aiScheduler/Cargo.toml b/k3_aiScheduler/Cargo.toml
+index e34598a..9f62cd0 100644
+--- a/k3_aiScheduler/Cargo.toml
++++ b/k3_aiScheduler/Cargo.toml
+@@ -6,7 +6,7 @@ edition = "2024"
+ [dependencies]
+ dma-api = "0.8.1"
+ ov-channels = { version = "0.2" }
+-k3_aiUabi = { path = "../k3_aiUabi" }
++k3_ai_uabi = { path = "../k3_aiUabi", package = "k3_aiUabi" }
+ k3_kernel_backend = { path = "../k3_kernel_backend" }
+ log = "0.4.32"
+ spin = "0.12.0"
+diff --git a/k3_aiScheduler/src/kd_kring.rs b/k3_aiScheduler/src/kd_kring.rs
+index c42a798..0538292 100644
+--- a/k3_aiScheduler/src/kd_kring.rs
++++ b/k3_aiScheduler/src/kd_kring.rs
+@@ -112,8 +112,8 @@
+ 
+ use alloc::vec;
+ use alloc::{collections::vec_deque::VecDeque, vec::Vec};
+-use k3_aiUabi::error::SchedulerErr;
+-use k3_aiUabi::{AiGraphNode, AiParsedGraph};
++use k3_ai_uabi::error::SchedulerErr;
++use k3_ai_uabi::{AiGraphNode, AiParsedGraph};
+ 
+ /// 内核侧把一张 DAG 收敛成的单条调度链。
+ ///
+@@ -225,7 +225,7 @@ pub fn resolve_parsed_graph(pid: u32, graph: &AiParsedGraph) -> Result<TaskLink,
+ 
+ #[cfg(test)]
+ mod tests {
+-    use k3_aiUabi::{AiGraphBuildError, AiGraphEdge, AiGraphParser, AiKernelDesc, GraphManager};
++    use k3_ai_uabi::{AiGraphBuildError, AiGraphEdge, AiGraphParser, AiKernelDesc, GraphManager};
+ 
+     use super::*;
+ 
+diff --git a/k3_aiScheduler/src/scheduler.rs b/k3_aiScheduler/src/scheduler.rs
+index 3cb6f5d..18275b0 100644
+--- a/k3_aiScheduler/src/scheduler.rs
++++ b/k3_aiScheduler/src/scheduler.rs
+@@ -6,8 +6,8 @@ use alloc::vec;
+ use alloc::{boxed::Box, collections::vec_deque::VecDeque, vec::Vec};
+ use core::cell::UnsafeCell;
+ use core::sync::atomic::{AtomicBool, Ordering};
+-use k3_aiUabi::AiGraphSubmitEntry;
+-use k3_aiUabi::error::SchedulerErr;
++use k3_ai_uabi::AiGraphSubmitEntry;
++use k3_ai_uabi::error::SchedulerErr;
+ use k3_kernel_backend::k3_run_kernel;
+ use log::error;
+ use ov_channels::{Message, Sender};
+diff --git a/k3_kernel_backend/Cargo.toml b/k3_kernel_backend/Cargo.toml
+index 31f01d3..149790d 100644
+--- a/k3_kernel_backend/Cargo.toml
++++ b/k3_kernel_backend/Cargo.toml
+@@ -4,5 +4,5 @@ version = "0.1.0"
+ edition = "2024"
+ 
+ [dependencies]
+-k3_aiUabi = { path = "../k3_aiUabi" }
++k3_ai_uabi = { path = "../k3_aiUabi", package = "k3_aiUabi" }
+ log = "0.4.32"
+diff --git a/k3_kernel_backend/src/lib.rs b/k3_kernel_backend/src/lib.rs
+index 5077978..ff081b8 100644
+--- a/k3_kernel_backend/src/lib.rs
++++ b/k3_kernel_backend/src/lib.rs
+@@ -6,8 +6,8 @@ extern crate alloc;
+ 
+ use core::ptr::read_unaligned;
+ 
+-use k3_aiUabi::error::BackendErr;
+-use k3_aiUabi::{
++use k3_ai_uabi::error::BackendErr;
++use k3_ai_uabi::{
+     AiDtype, AiGraphNode, AiTensorDesc, AiTensorFormat, AiTensorLayout, KernelOp, MAX_DIM,
+     MAX_SUBMIT_TENSORS,
+ };
+diff --git a/k3_kernel_backend/src/matmul.rs b/k3_kernel_backend/src/matmul.rs
+index 26591fc..2910cfe 100644
+--- a/k3_kernel_backend/src/matmul.rs
++++ b/k3_kernel_backend/src/matmul.rs
+@@ -8,8 +8,8 @@ use core::ops::{Add, Mul};
+ use core::slice;
+ 
+ use crate::BackendCall;
+-use k3_aiUabi::error::BackendErr;
+-use k3_aiUabi::{AiDtype, MatMulAttr};
++use k3_ai_uabi::error::BackendErr;
++use k3_ai_uabi::{AiDtype, MatMulAttr};
+ use log::error;
+ 
+ /// matmul 算子的输入输出参数集合，供 a100/x100/cpu 分发使用。
+diff --git a/k3_test/.cargo/config.toml b/k3_test/.cargo/config.toml
+index ff00e69..ed53ad6 100644
+--- a/k3_test/.cargo/config.toml
++++ b/k3_test/.cargo/config.toml
+@@ -2,8 +2,8 @@
+ target = "riscv64gc-unknown-linux-musl"
+ 
+ [target.riscv64gc-unknown-linux-musl]
+-linker = "/home/inkbottle/.local/riscv-musl/bin/riscv64-unknown-linux-musl-gcc"
+-ar = "/home/inkbottle/.local/riscv-musl/bin/riscv64-unknown-linux-musl-ar"
++linker = "rust-lld"
++ar = "/data/codes/OS-train-26fall/hera-rt-lab/tools/bin/riscv64-linux-musl-ar"
+ rustflags = [
+     "-C",
+     "target-feature=+crt-static",
+diff --git a/k3_test/Cargo.toml b/k3_test/Cargo.toml
+index 328c157..786170c 100644
+--- a/k3_test/Cargo.toml
++++ b/k3_test/Cargo.toml
+@@ -4,7 +4,7 @@ version = "0.1.0"
+ edition = "2024"
+ 
+ [dependencies]
+-k3_aiRuntime = { path = "../k3_aiRuntime" }
++k3_ai_runtime = { path = "../k3_aiRuntime", package = "k3_aiRuntime" }
+ 
+ [profile.dev]
+ debug = true
+diff --git a/k3_test/src/main.rs b/k3_test/src/main.rs
+index 7069829..ee8c6b2 100644
+--- a/k3_test/src/main.rs
++++ b/k3_test/src/main.rs
+@@ -3,7 +3,7 @@
+ use core::ptr;
+ use std::os::raw::{c_int, c_void};
+ 
+-use k3_aiRuntime::fronted::{
++use k3_ai_runtime::fronted::{
+     AiDtype, AiKernelDesc, AiTargetHint, GraphManager, MatMulAttr, TensorManager,
+     kd_uring::{build_channel, submit_graph, wait_graph_complete}
+ };
