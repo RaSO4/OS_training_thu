@@ -1,0 +1,37 @@
+diff --git a/components/axcpu/src/riscv/uspace.rs b/components/axcpu/src/riscv/uspace.rs
+index f8e6c60..0f2758b 100644
+--- a/components/axcpu/src/riscv/uspace.rs
++++ b/components/axcpu/src/riscv/uspace.rs
+@@ -30,6 +30,14 @@ impl UserContext {
+         sstatus.set_sum(true); // enable user memory access in supervisor mode
+         #[cfg(feature = "fp-simd")]
+         sstatus.set_fs(FS::Initial); // set the FPU to initial state
++        // [HERA-LAB bring-up] enable user-mode RVV on SpacemiT K3 (X100/A100).
++        // Without VS=Initial every user vector instruction (incl. `csrr vlenb`)
++        // traps as illegal on real hardware. QEMU does not enforce this, which
++        // is why the gap only shows on the board.
++        // NOTE: experimental — no per-task vector register save/restore yet;
++        // vector state may leak across tasks sharing a hart. Fine for pinned
++        // benchmarks; proper vector context switch is future work.
++        sstatus.set_vs(riscv::register::mstatus::VS::Initial);
+ 
+         #[cfg(feature = "xuantie-c9xx")]
+         {
+diff --git a/drivers/ax-driver/src/block/spacemit_sdhci.rs b/drivers/ax-driver/src/block/spacemit_sdhci.rs
+index 69433b3..c75e69b 100644
+--- a/drivers/ax-driver/src/block/spacemit_sdhci.rs
++++ b/drivers/ax-driver/src/block/spacemit_sdhci.rs
+@@ -45,7 +45,12 @@ const K3_SDHCI_REFERENCE_CLOCK_HZ: u32 = 204_800_000;
+ // removable SD slot is only reliable with a conservative identification clock,
+ // so report a doubled divider input while leaving the real MMIO clock setup
+ // unchanged.
+-const K3_SDHCI_SD_ONLY_DIVIDER_BASE_HZ: u32 = K3_SDHCI_REFERENCE_CLOCK_HZ * 2;
++// [HERA-LAB] x2 was not enough on BananaPi-1/2: sustained large reads (LLM
++// model load, >100MB) hit CRC mismatches and the controller wedges into
++// command timeouts. x4 quarters the effective data clock (~12-25MHz class);
++// a 105MB model reads in ~9s. Prefer slow-but-correct until proper SpacemiT
++// delay tuning (U-Boot's delay_code=69 equivalent) is implemented.
++const K3_SDHCI_SD_ONLY_DIVIDER_BASE_HZ: u32 = K3_SDHCI_REFERENCE_CLOCK_HZ * 4;
+ 
+ const SPACEMIT_SDHC_OP_EXT_REG: usize = 0x108;
+ const SDHC_OVRRD_CLK_OEN: u32 = 1 << 11;

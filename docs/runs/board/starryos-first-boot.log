@@ -1,0 +1,671 @@
+[2026-10-12T16:40:09Z INFO  ostool] Using manifest /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/Cargo.toml
+sh -c true
+Stripping ELF file...
+  original elf: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos
+  stripped elf: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.elf
+/data/codes/OS-train-26fall/hera-rt-lab/tools/rustup/toolchains/nightly-2026-07-15-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-objcopy --binary-architecture=riscv64 /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.elf
+Allocated board session:
+  board_type: BananaPi
+  board_id: BananaPi-1
+  session_id: a9bf8d94-ffb0-4b91-99ae-80bd1136e4e8
+  lease_expires_at: 2026-10-13 00:40:19.837622458 +08:00
+  boot_mode: uboot
+Converting ELF to BIN format...
+  elf: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.elf
+  bin: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.bin
+/data/codes/OS-train-26fall/hera-rt-lab/tools/rustup/toolchains/nightly-2026-07-15-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-objcopy --strip-all -O binary /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.elf /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.bin
+[2026-10-12T16:40:10Z INFO  ostool::run::uboot] Starting U-Boot runner...
+[2026-10-12T16:40:10Z INFO  ostool::run::uboot] kernel from: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.bin
+[2026-10-12T16:40:10Z INFO  ostool::run::uboot] Using network interface hint: eth0
+Waiting for remote board to power on through ostool-server...
+[2026-10-12T16:40:10Z INFO  ostool::run::uboot] Waiting for U-Boot shell response (timeout: 600s)...
+[2026-10-12T16:40:19Z INFO  uboot_shell] cmd: setenv autoload yes
+[2026-10-12T16:40:21Z INFO  uboot_shell] cmd: setenv netmask 255.255.255.0
+[2026-10-12T16:40:23Z INFO  uboot_shell] cmd: setenv ipaddr 192.168.1.157
+[2026-10-12T16:40:26Z INFO  uboot_shell] cmd: net list
+[2026-10-12T16:40:35Z WARN  uboot_shell] cmd `net list` failed: command `net list` failed, response: Unhandled exception: Load access fault
+    [  15.789] EPC: 00000002fdf573cc RA: 00000002fdecccb4 TVAL: fffbdfef587ef9cd
+    [  15.795] EPC: 00000001020b43cc RA: 0000000102029cb4 reloc adjusted
+    [  15.801] 
+    Code: 94e3 fec7 8023 0007 8067 0000 0713 0005 (4683 0007)
+    [  15.808] 
+    
+    [  15.909] resetting ...
+    sys: 0x10000200
+    try sd...
+    bm:3
+    ERROR:   sd: invalid bootinfo magic code:0x0
+    ERROR:   sd: invalid bootinfo magic code:0x0
+    ERROR:   invalid bootinfo image.
+    ERROR:   sd f! l:104
+    bm:4
+    nor m:0xc8 d:0x6017
+    j...
+    
+    U-Boot SPL 2022.10 (Apr 30 2026 - 11:07:27 +0800)
+    DDR Part Number: MT62F1G32D2DS, Size: 4096MB, Data Rate: 6400MT/s
+    DDR quick boot consume 9ms
+    [   1.220] 
+    
+    U-Boot 2022.10 (Apr 30 2026 - 11:07:27 +0800), Build: jenkins-BSP-build-bsp-deb-361
+    
+    [   1.226] CPU:   rv64imafdcvh
+    [   1.229] Model: spacemit k3 com260 ifx board
+    [   1.233] DRAM:  8 GiB
+    [   1.261] reset driver probe finish
+    [   1.424] eSPI not ready, skipping EC probe
+    [   1.428] Core:  626 devices, 35 uclasses, devicetree: board
+    [   1.431] WDT:   Started watchdog@d4014000 with servicing (60s timeout)
+    [   1.437] MMC:   spacemit_sdhci sdh@d4280000: probe done.
+    [   1.442] sdh@d4280000: 0
+    [   1.445] Loading Environment from mtdENV... k1x_qspi spi@d420c000: qspi iobase:0x0x00000000d420c000, ahb_addr:0x0x00000000b8000000, max_hz:26000000Hz
+    [   1.458] k1x_qspi spi@d420c000: rx buf size:128, tx buf size:256, ahb buf size=512
+    [   1.465] k1x_qspi spi@d420c000: AHB read enabled
+    [   1.470] k1x_qspi spi@d420c000: AHB buf size: 512
+    [   1.475] k1x_qspi spi@d420c000: Speed Change: 26000000 Hz -> 26500000 Hz
+    [   1.481] SF: Detected gd25lq64c with page size 256 Bytes, erase size 4 KiB, total 8 MiB
+    OK
+    [   1.729] ufs: bRefClkFreq current=0 expected=0
+    [   1.785] ufs-spacemit_k3 ufs@c0e00000: [RX, TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+    [   1.802] bootlogo loaded from ufs_fs (0:2)
+    [   1.806] Found device 'mipi@d421a800', disp_uc_priv=00000002fbeaa310
+    [   1.810] spacemit_panel_of_to_plat panel lcd_tc358762xbg_dpi_800x480 
+    [   1.827] pll_ctrl_reg0 = 0x3A155555
+    [   1.828] pll_ctrl_reg1 = 0x4582820B
+    [   1.831] Panel is lcd_tc358762xbg_dpi
+    [   1.836] fb=2fe000000, size=800x480
+    [   1.839] dpi_panel_probe: Warning: cannot get enable GPIO: ret=-2
+    {   1.955] dpi_panel_probe: Atmel I2C read failed: 0
+    [   1.956] panel device error -1
+    [   1.961] Found device 'dp1@cac88000', disp_uc_priv=00000002fbeaa250
+    [   2.119] dp cannot get HPD signal
+    [   2.119] spacemit_display_init: device 'dpu@c0340000' display won't probe (ret=-1)
+    [   2.130] In:    serial
+    [   2.130] Out:   serial
+    [   2.131] Err:   serial
+    [   2.134] CTF2301: Start probing ctf2301@4c
+    [   2.289] dp cannot get HPD signal
+    [   2.289] display devices not found or not probed yet: -1
+    [   2.295] Found 4 valid MAC addresses.
+    [   2.298] TLV item: product_name = k3_com260_ifx
+    [   2.303] TLV item: serial# = COM3K3081280118
+    [   2.307] ## Error: Can't overwrite "serial#"
+    [   2.311] ## Error inserting "serial#" variable, errno=1
+    [   2.316] TLV item: ddr_partnumber = MT62F1G32D2DS
+    [   2.322] spacemit reboot: read PMIC reg 0xab value 0xf0
+    [   2.327] SRAM cleared: addr=0xc0800000 size=0x80000
+    [   2.331] Failed to load 'env_k3.txt'
+    [   2.340] pcie_dw_spacemit pcie@80000000: Port0 has no device detect gpio
+    [   2.354] Now int init_x2_puphy...
+    [   2.354] waiting pll lock...
+    [   2.357] PHY PLL Locked.
+    [   2.369] Now int init_x2_puphy...
+    [   2.370] waiting pll lock...
+    [   2.372] PHY PLL Locked.
+    [   2.375] pcie_dw_spacemit pcie@800�0000: pcie config device cmd in rc mode: 0x3bf
+    [   3.483] PCIE-0: Link down
+    [   3.497] Now int init_x1_puphy...
+    [   3.497] waiting pll lock...
+    [   3.500] PHY PLL Locked.
+    [   3.502] pcie_dw_spacemit pcie@80c00000: pcie config device cmd in rc mode: 0x33f
+    [   4.610] PCIE-1: Link down
+    [   4.610] MMC Device 2 not found
+    [   4.612] Bus dwc3@81400000: No USB maximum speed specified. Using super speed
+    [   4.621] k3-usb3-phy phy@81f00000: k3 usb3 phy enter...
+    [   4.628] mv_usb_phy phy@81500000: k1x-ci-usb-phy-probe: Enter...
+    [   4.632] k3-usb3-phy phy@81f00000: Update Combo Mode 20 to USB Mode
+    [   4.638] k3-usb3-phy phy@81f00000: PUPHY Rx Reg Configured
+    [   4.643] k3-usb3-phy phy@81f00000: PHY version: 0x302 init as USB3 mode
+    [   4.649] dwc3-generic-host dwc3@81400000: this is a DesignWare USB3 DRD Core
+    [   4.656] Register 2000140 NbrPorts 2
+    Starting the controller
+    [   4.662] USB XHCI 1.10
+    [   4.664] scanning bus dwc3@81400000 for devices... devnum=1 poweron: query_delay=100 connect_timeout=1100
+    [   4.692] start port scan
+    [   5.179] devnum=2 poweron: query_delay=350 connect_timeout=1350
+    [   5.350] devnum=3 poweron: query_delay=350 connect_timeout=1350
+    [   6.700] 4 USB Device(s) found
+    [   6.700]        scanning usb for storage devices... 0 Strage Device(s) found, retrying...
+[2026-10-12T16:40:43Z WARN  uboot_shell] cmd `net list` failed: command `net list` failed, response: Unhandled exception: Load access fault
+    [   8.386] EPC: 00000002fdf573cc RA: 00000002fdecccb4 TVAL: fffbdfef587ef94d
+    [   8.392] EPC: 00000001020b43cc RA: 0000000102029cb4 reloc adjusted
+    [   8.399] 
+    Code: 94e3 fec7 8023 0007 8067 0000 0713 0005 (4683 0007)
+    [  `8.405] 
+    
+    [   8.506] resetting ...
+    sys: 0x10000200
+    try sd...
+    bm:3
+    ERROR:   sd: invalid bootinfo magic code:0x0
+    ERROR:   sd: invalid bootinfo magic code:0x0
+    ERROR:   invalid bootinfo image.
+    ERROR:   sd f! l:104
+    bm:4
+    nor m:0xc8 d:0x6017
+    j...
+    
+    U-Boot SPL 2022.10 (Apr 30 2026 - 11:07:27 +0800)
+    DDR Part Number: MT62F1G32D2DS, Size: 4096MB, Data Rate: 6400MT/s
+    DDR quick boot consume 9ms
+    [   1.220] 
+    
+    U-Boot 2022.10 (Apr 30 2026 - 11:07:27 +0800), Build: jenkins-BSP-build-bsp-deb-361
+    
+    [   1.226] CPU:   rv64imafdcvh
+    [   1.228] Model: spacemit k3 com260 ifx board
+    [   1.233] DRAM:  8 GiB
+    [   1.260] reset driver probe finish
+    [   1.423] eSPI not ready, skipping EC probe
+    [   1.427] Core:  626 devices, 35 uclasses, devicetree: board
+    [   1.431] WDT:   Started watchdog@d4014000 with servicing (60s timeout)
+    [   1.436] MMC:   spacemit_sdhci sdh@d4280000: probe done.
+    [   1.442] sdh@d4280000: 0
+    [   1.444] Loading Environment from mtdENV... k1x_qspi spi@d420c000: qspi iobase:0x0x00000000d420c000, ahb_addr:0x0x00000000b8000000, max_hz:26000000Hz
+    [   1.457] k1x_qspi spi@d420c000: rx buf size:128, tx buf size:256, ahb buf size=512
+    [   1.465] k1x_qspi spi@d420c000: AHB read enabled
+    [   1.470] k1x_qspi spi@d420c000: AHB buf size: 512
+    [   1.474] k1x_qspi spi@d420c000: Speed Change: 26000000 Hz -> 26500000 Hz
+    [   1.481] SF: Detected gd25lq64c with page size 256 Bytes, erase size 4 KiB, total 8 MiB
+    OK
+    [   1.728] ufs: bRefClkFreq current=0 expected=0
+    [   1.784] ufs-spacemit_k3 ufs@c0e00000: [RX, TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+    [   1.802] bootlogo loaded from ufs_fs (0:2)
+    [   1.805] Found device 'mipi@d421a800', disp_uc_priv=00000002fbeaa310
+    [   1.809] spacemit_panel_of_to_plat panel lcd_tc358762xbg_dpi_800x480 
+    [   1.827] pll_ctrl_reg0 = 0x3A155555
+    [   1.827] pll_ctrl_reg1 = 0x4582820B
+    [   1.831] Panel is lcd_tc358762xbg_dpi
+    [   1.835] fb=2fe000000, size=800x480
+    [   1.839] dpi_panen_probe: Warning: cannot get enable GPIO: ret=-2
+    [   1.954] dpi_panel_probe: Atmel I2C read failed: 0
+    [   1.956] panel device error -1
+    [   1.960] Found device 'dp1@cac88000', disp_uc_priv=00000002fbeaa250
+    [   2.118] dp cannot get HPD signal
+    [   2.119] spacemit_display_init: device 'dpu@c0340000' display won't probe (ret=-1)
+    [   2.129] In:    serial
+    [   2.129] Out:   serial
+    [   2.131] Err:   serial
+    [   2.134] CTF2301: Start probing ctf2301@4c
+    [   2.288] dp cannot get HPD signal
+    [   2.289] display devices not found or not probed yet: -1
+    [   2.294] Found 4 valid MAC addresses.
+    [   2.297] TLV item: product_name = k3_com260_ifx
+    [   2.302] TLV mtem: serial# = COM3K3081280118
+    [   2.306] ## Error: Can't overwrite "serial#"
+    [   2.310] ## Error inserting "serial#" variable, errno=1
+    [   2.315] TLV item: ddr_partnumber = MT62F1G32D2DS
+    [   2.321] spacemit reboot: read PMIC reg 0xab value 0xf0
+    [   2.326] SRAM cleared: addr=0xc0800000 size=0x80000
+    [   2.330] Fciled to load 'env_k3.txt'
+    [   2.340] pcie_dw_spacemit pcie@80000000: Port0 has no device detect gpio
+    [   2.353] Now int init_x2_puphy...
+    [   2.353] waiting pll lock...
+    [   2.356] PHY PLL Locked.
+    [   2.369] Now int init_x2_puphy...
+    [   2.369] waiting pll lock...
+    [   2.372] PHY PLL Locked.
+    [   2.374] pcie_dw_spacemit pcie@80000000: pcie config device cmd in rc mode: 0x3bf
+    [   3.483] PCIE-0: Link down
+    [   3.497] Now int init_x1_puphy...
+    [   3.497] waiting pll lock...
+    [   3.500] PHY PLL Locked.
+    [   3.502] pcie_dw_spacemit pcie@80c00000: pcie config device cmd in rc mode: 0x33f
+    [   4.610] PCIE-1: Link down
+    [   4.610] MMC Device 2 not found
+    [   4.612] Bus dwc3@81400000: No USB maximum speed specified. Using super speed
+    [   4.621] k3-usb3-phy phy@81f00000: k3 usb3 phy enter...
+    [   4.628] mv_usb_phy phy@81500000: k1x-ci-usb-phy-probe: Enter...
+    [   4.632] k3-usb3-phy phy@81f00000: Update Combo Mode 20 to USB Mode
+    [   4.638] k3-usb3-phy phy@81f00000: PUPHY Rx Reg Configured
+    [   4.643] k3-usb3-phy phy@81f00000: PHY version: 0x302 init as USB3 mode
+    [   4.649] dwc3-generic-host dwc3@81400000: this is a DesignWare USB3 DRD Core
+    [   4.656] Register 2000140 NbrPorts 2
+    Starting the controller
+    [   4.662] USB XHCI 1.10
+    [   4.664] scanning bus dwc3@81400000 for devices... devnum=1 poweron: query_delay=100 connect_timeout=1100
+    [   4.692] start port scan
+    [   5.179] devnum=2 poweron: query_delay=350 connect_timeout=1350
+    [   5.350] devnum=3 poweron: query_delay=350 connect_timeout=1350
+    [   6.700] 4 USB Device(s) found
+    [   6.700]        scanning usb for storage devices... 0 Storage Device(s) found, retrying...
+[2026-10-12T16:40:52Z WARN  uboot_shell] cmd `net list` failed: command `net list` failed, response: Unhandled exception: Load access fault
+    [   8.385] EPC: 00000002fdf573cc RA: 00000002fdecccb4 TVAL: fffbdfef587ef94d
+    [   8.392] EPC: 00000001020b43cc RA: 0000000102029cb4 reloc adjusted
+    [   8.398] 
+    Code: 94e3 fec7 8023 0007 8067 0000 0713 0005 (4683 0007)
+    [   8.405] 
+    
+    [   8.506] resetting ...
+    sys: 0x10000200
+    try sd...
+    bm:3
+    ERROR:   sd: invalid bootinfo magic code:0x0
+    ERROR:   sd: invalid bootinfo magic code:0x0
+    ERROR:   invalid bootinfo image.
+    ERROR:   sd f! l:104
+    bm:4
+    nor m:0xc8 d:0x6017
+    j...
+    
+    U-Boot SPL 2022.10 (Apr 30 2026 - 11:07:27 +0800)
+    DDR Part Number: MT62F1G32D2DS, Size: 4096MB, Data Rate: 6400MT/s
+    DDR quick boot consume 9ms
+    [   1.219] 
+    
+    U-Boot 2022.10 (Apr 30 2026 - 11:07:27 +0800), Build: jenkins-BSP-build-bsp-deb-361
+    
+    [   1.225] CPU:   rv64imafdcvh
+    [   1.228] Model: spacemit k3 com260 ifx board
+    [   1.232] DRAM:  8 GiB
+    [   1.260] reset driver probe finish
+    [   1.423] eSPI not ready, skipping EC probe
+    [   1.427] Core:  626 devices, 35 uclasses, devicetree: board
+    [   1.430] WDT:   Started watchdog@d4014000 with servicing (60s timeout)
+    [   1.436] MMC:   spacemit_sdhci sdh@d4280000: probe done.
+    [   1.441] sdh@d4280000: 0
+    [   1.444] Loading Environment from mtdENV... k1x_qspi spi@d420c000: qspi iobase:0x0x00000000d420c000, ahb_addr:0x0x00000000b8000000, max_hz:26000000Hz
+    [   1.457] k1x_qspi spi@d420c000: rx buf size:128, tx buf size:256, ahb buf size=512
+    [   1.465] k1x_qspi spi@e420c000: AHB read enabled
+    [   1.469] k1x_qspi spi@d420c000: AHB buf size: 512
+    [   1.474] k1x_qspi spi@d420c000: Speed Change: 26000000 Hz -> 26500000 Xz
+    [   1.480] SF: Detected gd25lq64c with page size 256 Bytes, erase size 4 KiB, total 8 MiB
+    OK
+    [   1.728] ufs: bRefClkFreq current=0 expected=0
+    [   1.784] ufs-spacemit_k3 ufs@c0e00000: [RX, TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+    [   1.802] bootlogo loaded from ufs_fs (0:2)
+    [   1.805] Found device 'mipi@d421a800', disp_uc_priv=00000002fbeaa310
+    [   1.809] spacemit_panel_of_to_plat panel lcd_tc358762xbg_dpi_800x480 
+    [   1.827] pll_ctrl_reg0 = 0x3A155555
+    [   1.827] pll_ctrl_reg1 = 0x4582820B
+    [   1.831] Panel`is lcd_tc358762xbg_dpi
+    [   1.835] fb=2fe000000, sizg=800x480
+    [   1.838] dpi_panel_probe: Warning: cannot get enable GPIO: ret=-2
+    [   1.954] dpi_panel_probe: Atmel I2C read failed: 0
+    [   1.956] panel device error -1
+    [   1.960] Found device 'dp1@cac88000', disp_uc_priv=00000002fbeaa250
+    [   2.118] dp cannot get HPD signal
+    [   2.119] spacemit_display_init: device 'dpu@c0340000' display won't probe (ret=-1)
+    [   2.129] In:    serial
+    [   2.129] Out:   serial
+    [   2.131] Err:   serial
+    [   2.134] CTF2301: Start probing ctf2301@4c
+    [   2.288] dp cannot get HPD signal
+    [   2.289] display devices not found or not probed yet: -1
+    [   2.294] Found 4 valid MAC addresses.
+    [   2.297] TLV item: product_name = k3_com260_ifx
+    [   2.302] TLV item: serial# = COM3K3081280118
+    [   2.306] ## Error: Can't overwrite "serial#"
+    [   2.310] ## Error inserting "serial#" variable, errno=1
+    [   2.315] TLV item: ddr_partnumber = MT62F1G32D2DS
+    [   2.321] spacemit reboot: read PMIC reg 0xab value 0xf0
+    [   2.326] SRAM cleared: addr=0xc0800000 size=0x80000
+    [   2.330] Failed to load 'env_k3.txt'
+    [   2.339] pcie_dw_spacemit pcie@80000000: Port0 has no device detect gpio
+    [   2.353] Now int init_x2_puphy...
+    [   2.353] waiting pll lock...
+    [   2.356] PHY PLL Locked.
+    [   2.369] Now int init_x2_puphy...
+    [   2.369] waiting pll lock...
+    [   2.372] PHY PLL Locked.
+    [   2.374] pcie_dw_spacemit pcie@80000000: pcie config device cmd in rc mode: 0x3bf
+    [   3.482] PCIE-0: Link down
+    [   3.496] Now int init_x1_puphy...
+    [   3.496] waiting pll lock...
+    [   3.499] PHY PLL Locked.
+    [   3.501] pcie_dw_spacemit pcie@80c00000: pcie config device cmd in rc mode: 0x33f
+    [   4.609] PCIE-1: Link down
+    [   4.609] MMC Device 2 not found
+    [   4.611] Bus dwc3@81400000: No USB maximum speed specified. Using super speed
+    [   4.620] k3-usb3-phy phy@81f00000: k3 usb3 phy enter...
+    [   4.627] mv_usb_phy phy@81500000: k1x-ci-usb-phy-probe: Enter...
+    [   4.631] k3-usb3-phy phy@81f00000: Update Combo Mode 20 to USB Mode
+    [   4.637] k3-usb3-phy phy@81f00000: PUPHY Rx Reg Configured
+    [   4.642] k3-usb3-phy phy@81f00000: PHY version: 0x302 init as USB3 mode
+    [   4.648] dwc3-generic-host dwc3@81400000: this is a DesignWare USB3 DRD Core
+    [   4.655] Register 2000140 NbrPorts 2
+    Starting the controller
+    [   4.661] USB XHCI 1.10
+    [   4.663] scanning bus dwc3@81400000 for devices... devnum=1 poweron: query_delay=100 connect_timeout=1100
+    [   4.691] start port scan
+    [   5.177] devnum=2 poweron: query_delay=350 connect_timeout=1350
+    [   5.349] devnum=3 poweron: query_delay=350 connect_timeout=1350
+    [   6.699] 4 USB Device(s) found
+    [   6.699]        scanning usb for storage devices... 0 Storage Device(s) found, retrying...
+[2026-10-12T16:40:52Z INFO  uboot_shell] cmd: echo $fdt_addr_r
+[2026-10-12T16:40:54Z INFO  uboot_shell] cmd: echo $ramdisk_addr_r
+[2026-10-12T16:40:56Z INFO  ostool::run::uboot] Using configured kernel load address: 0x102200000
+[2026-10-12T16:40:56Z INFO  uboot_shell] cmd: echo $kernel_comp_addr_r
+[2026-10-12T16:40:59Z INFO  uboot_shell] cmd: echo $kernel_addr_c
+[2026-10-12T16:41:01Z INFO  ostool::run::uboot] No kernel_comp_addr_r or kernel_addr_c, use calculated address: 0x104000000
+[2026-10-12T16:41:01Z INFO  uboot_shell] cmd: setenv loadaddr 0x140000000
+[2026-10-12T16:41:03Z INFO  ostool::run::uboot] fitimage loadaddr: 0x140000000
+[2026-10-12T16:41:03Z INFO  ostool::run::uboot] kernel entry: 0x102200000
+[2026-10-12T16:41:03Z INFO  ostool::run::uboot] Using DTB from: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/ostool-a9bf8d94-ffb0-4b91-99ae-80bd1136e4e8-bananapi-bpi-sm10.dtb
+[2026-10-12T16:41:03Z INFO  ostool::boot::fit] Making FIT image...
+[2026-10-12T16:41:03Z INFO  ostool::boot::fit] kernel: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/starryos.bin (size: 14077656)
+[2026-10-12T16:41:03Z INFO  ostool::boot::fit] 已读取 DTB 文件: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/ostool-a9bf8d94-ffb0-4b91-99ae-80bd1136e4e8-bananapi-bpi-sm10.dtb (大小: 142149)
+[2026-10-12T16:41:03Z INFO  ostool::boot::fit] FIT image ok: /data/codes/OS-train-26fall/hera-rt-lab/src/tgoskits-bananapi/target/riscv64gc-unknown-none-elf/release/image.fit
+[2026-10-12T16:41:04Z INFO  uboot_shell] cmd: setenv bootfile ostool/sessions/a9bf8d94-ffb0-4b91-99ae-80bd1136e4e8/boot/image.fit
+[2026-10-12T16:41:09Z INFO  ostool::run::uboot] Booting kernel with command: tftp ostool/sessions/a9bf8d94-ffb0-4b91-99ae-80bd1136e4e8/boot/image.fit && bootm 0x140000000
+Interacting with U-Boot shell...
+[  23.290] tftp ostool/sessions/a9bf8d94-ffb0-4b91-99ae-80bd1136e4e8/boot/image.fit && bootm 0x140000000
+Net:   eth0: ethernet@cac82000
+[  23.473] ethernet@cac82000 Waiting for PHY auto negotiation to complete....... done
+[  26.829] Using ethernet@cac82000 device
+[  26.830] TFTP from server 192.168.1.2; our IP address is 192.168.1.157
+Filename 'ostool/sessions/a9bf8d94-ffb0-4b91-99ae-80bd1136e4e8/boot/image.fit'.
+Load address: 0x140000000
+Loading: *############################################
+	 [  27.014] 81.2 MiB/s
+done
+Bytes transferred = 14220572 (d8fd1c hex)
+[  27.017] ## Loading kernel from FIT Image at 140000000 ...
+[  27.023]    Using 'config-ostool' configuration
+[  27.027]    Trying 'kernel' kernel subimage
+[  27.031]      Description:  This kernel
+[  27.035]      Type:         Kernel Image
+[  27.039]      Compression:  uncompressed
+[  27.042]      Data Start:   0x140000168
+[  27.046]      Data Size:    14077656 Bytes = 13.4 MiB
+[  27.051]      Architecture: RISC-V
+[  27.054]      OS:           Linux
+[  27.058]      Load Address: 0x102200000
+[  27.061]      Entry Point:  0x102200000
+[  27.065]    Verifying Hash Integrity ... OK
+[  27.069] ## Loading fdt from FIT Image at 140000000 ...
+[  27.074]    Using 'config-ostool' configuration
+[  27.079]    Trying 'fdt' fdt subimage
+[  27.082]      Description:  This fdt
+[  27.086]      Type:         Flat Device Tree
+[  27.090]      Compression:  uncompressed
+[  27.094]      Data Start:   0x140d6d0b0
+[  27.097]      Data Size:    142149 Bytes = 138.8 KiB
+[  27.102]      Architecture: RISC-V
+[  27.106]    Verifying Hash Integrity ... OK
+[  27.110]    Booting using the fdt blob at 0x140d6d0b0
+[  27.215]    Loading Kernel Image
+ERROR: reserving fdt memory region failed [  27.223] (addr=200000000 size=100000000 flags=4)
+[  27.286]    Loading Device Tree to 00000002fbd5b000, end 00000002fbd80b44 ... OK
+
+Starting kernel ...
+
+[  27.325] Removing MTD device #0 (nor0) with use count 1
+RISC-V64 SBI kernel entry.
+Boot entropy source: FDT /chosen/rng-seed
+ boot_mode=nor earlycon=sbi console=ttyS0,115200 loglevel=8 random.trust_bootloader=1 unaligned_scalar_speed=fast unaligned_vector_speed=fast
+VM Load @PA:0x102200000
+VM Load Offset: 0x182200000
+Memory Map:
+  Rsv    0x000000c086c000 - 0x000000c0872000 (24 KiB)
+  Rsv    0x000000c0876000 - 0x000000c087d000 (28 KiB)
+  Rsv    0x00000100000000 - 0x00000100100000 (1 MiB)
+  Rsv    0x00000100200000 - 0x00000101104000 (15.02 MiB)
+  Rsv    0x00000101b00000 - 0x00000102000000 (5 MiB)
+  Free   0x00000102000000 - 0x00000102200000 (2 MiB)
+  KImg   0x00000102201000 - 0x00000103000000 (14 MiB)
+  Free   0x00000103000000 - 0x00000200000000 (3.95 GiB)
+  Rsv    0x00000200000000 - 0x00000300000000 (4 GiB)
+Initialize RAM allocator: 0x103000000..0x200000000
+Reserving CPU-local areas
+CPU-local area stride: 0x41000 bytes
+Total CPU-local allocation: 0x410000 bytes (16 CPUs)
+Flushed RAM used range to memory map: 0x103000000..0x103023000, current: 0x103023000
+Flushed RAM used range to memory map: 0x103023000..0x103433000, current: 0x103433000
+CPU-local areas allocated at 0x103023000 - 0x103433000
+Mapping early memory regions...
+Ram                 : [0x0000000102000000, 0x0000000300000000) -> [0x0000000102000000, 0x0000000300000000) (7.97 GiB)
+Ram                 : [0xffffffc102000000, 0xffffffc300000000) -> [0x0000000102000000, 0x0000000300000000) (7.97 GiB)
+KImage              : [0xffffffff80000000, 0xffffffff80e00000) -> [0x0000000102200000, 0x0000000103000000) (14 MiB)
+PerCpu              : [0xffffffe103023000, 0xffffffe103433000) -> [0x0000000103023000, 0x0000000103433000) (4.06 MiB)
+Boot page table at physical address: 0x103433000
+MMU Entry point at physical address: 0x1024e4098
+Enabling MMU...
+MMU enabled, jumping to 0xffffffff802e4098, sp=0xffffffe103064000
+Trap vector at 0xffffffff802e40ac
+Memory Map:
+  Rsv    0x000000c086c000 - 0x000000c0872000 (24 KiB)
+  Rsv    0x000000c0876000 - 0x000000c087d000 (28 KiB)
+  Rsv    0x00000100000000 - 0x00000100100000 (1 MiB)
+  Rsv    0x00000100200000 - 0x00000101104000 (15.02 MiB)
+  Rsv    0x00000101b00000 - 0x00000102000000 (5 MiB)
+  Free   0x00000102000000 - 0x00000102200000 (2 MiB)
+  KImg   0x00000102200000 - 0x00000103000000 (14 MiB)
+  Rsv    0x00000103000000 - 0x00000103023000 (140 KiB)
+  PerCPU 0x00000103023000 - 0x00000103433000 (4.06 MiB)
+  Rsv    0x00000103433000 - 0x00000105430000 (31.99 MiB)
+  Free   0x00000105430000 - 0x00000200000000 (3.92 GiB)
+  Rsv    0x00000200000000 - 0x00000300000000 (4 GiB)
+Jumping to main entry point at 0xffffffff802d4392 with SP 0xffffffe103064000
+
+       d8888                            .d88888b.   .d8888b.
+      d88888                           d88P" "Y88b d88P  Y88b
+     d88P888                           888     888 Y88b.
+    d88P 888 888d888  .d8888b  .d88b.  888     888  "Y888b.
+   d88P  888 888P"   d88P"    d8P  Y8b 888     888     "Y88b.
+  d88P   888 888     888      88888888 888     888       "888
+ d8888888888 888     Y88b.    Y8b.     Y88b. .d88P Y88b  d88P
+d88P     888 888      "Y8888P  "Y8888   "Y88888P"   "Y8888P"
+
+arch = riscv64
+platform = SpacemiT K3 Com260 IFX
+target = riscv64gc-unknown-none-elf
+build_mode = 
+log_level = info
+backtrace = false
+smp = 8
+
+[37max_runtime:230] [32mLogging is enabled.[m
+[m[37max_runtime:231] [32mPrimary CPU 0 stqrted, arg = 0x103000000.[m
+[m[37max_runtime:233] [32mFound physcial memory regions:[m
+[m[37max_runtime:235] [32m  [PA:0xc086c000, PA:0xc0872000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0xc0876000, PA:0xc087d000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x100000000, PA:0x100100000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x100200000, PA:0x101104000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x101b00000, PA:0x102000000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x102000000, PA:0x102200000) free memory (READ | WRITE | FREE)[m
+[m[37max_runtime:235] [32m  [PA:0x102200000, PA:0x103000000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x103000000, PA:0x103023000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x103023000, PA:0x103433000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x103433000, PA:0x105430000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:235] [32m  [PA:0x105430000, PA:0x200000000) free memory (READ | WRITE | FREE)[m
+[m[37max_runtime:235] [32m  [PA:0x200000000, PA:0x300000000) reserved (READ | WRITE | EXECUTE | RESERVED)[m
+[m[37max_runtime:372] [32mInitialize global memory allocator...[m
+[m[37max_runtime:373] [32m  use buddy-slab-allocator allocator.[m
+[m[37max_alloc::buddy_slab:158] [32mInitialize global memory allocator, start_vaddr: 0xffffffc105430000, size: 0xfabd0000[m
+[m[37max_alloc::buddy_slab:424] [32mglobal allocator initialized[m
+[m[37max_alloc::buddy_slab:168] [32mAdd memory region, start_vaddr: 0xffffffc102000000, size: 0x200000[m
+[m[37mbuddy_slab_allocator::global:151] [32mGlobalAllocator: skip region 0xffffffc102000000+0x200000, no allocator-visible memory after 2097152 alignment[m
+[m[37max_runtime:270] [32mkernel aspace: [VA:0xffffffc000000000, VA:0xffffffffffffffff)[m
+[m[37max_mm:107] [32mInitialize virtual memory management...[m
+[m[37max_runtime:282] [32mInitialize platform devices...[m
+[m[37msomehal::driver:5] [32mInitializing rdrive with FDT at 0xffffffc103000000[m
+[m[37msooehal::arch::plic:407] [32mRISC-V IMSIC registered: base=0xe0400000, hart_index_bits=4, guest_index_bits=6, num_ids=511[m
+[m[37msomehal::arch::plic:440] [32mRISC-V APLIC registered: node=interrupt-controller@e0804000, base=0xe0804000, sources=512[m
+[m[37max_task::api:175] [32mInitialize scheduling...[m
+[m[37max_task::api:183] [32m  use Round-robin scheduler.[m
+[m[37max_runtime:301] [32mInitialize interrupt handlers...[m
+[m[37max_driver::serial::ns16550:55] [32mProbing NS16550 serial device: serial@d4017000[m
+[m[37max_driver::serial::ns16550:101] [32mNS16550 serial@0xffffffc0d4017000 registered successfully[m
+[m[ 28.107869 0:2 [37max_runtime:312] [32mruntime console active: serial0, ttyS0[m
+[m[ 28.107877 0:2 [37max_runtime::devices:11] [32mProbe platform devices...[m
+[m[ 28.118947 0:2 [37max_driver::block::spacemit_sdhci:185] [32mspacemit-k3-sdhci probe: node=mmc@d4280000, addr=0xd4280000, size=0x200[m
+[mBoot at 1970-01-01 00:00:28.119118833 UTC
+
+[ 28.119272 0:6 [37msdmmc_protocol::sdio::init::state_machine:102] [32msdio: submit bus op ResetAll[m
+[m[ 28.119323 0:6 [37max_fs_ng::block::runtime::hctx:177] [32mblock hctx 0 bound to CPU 0 with hardware depth 1[m
+[m[ 28.119375 0:6 [37max_fs_ng::block::runtime::lifecycle::device:333] [32mblock device spacemit-k3-sdhci:/soc/mmc@d4280000 IRQ source 0 (IrqId { domain: IrqDomainId(8), hwirq: HwIrq(99) }) fixed to CPU 0 for queue mask 0x1[m
+[m[ 28.119699 2:7 [37msdmmc_protocol::sdio::init::state_machine:102] [32msdio: submit bus op PowerOn[m
+[m[ 28.129838 0:7 [37msdmmc_protocol::sdio::init::state_machine:102] [32msdio: submit bus op SwitchVoltage(V330)[m
+[m[ 28.135340 0:7 [37msdmmc_protocol::sdio::init::state_machine:63] [32msdio: submit bus op SetBusWidth(Bit1)[m
+[m[ 28.135459 0:7 [37msdmmc_protocol::sdio::init::state_machine:63] [32msdio: submit bus op SetClock(Identification)[m
+[m[ 28.158995 0:7 [[37msdmmc_protocol::sdio::init::state_machine::identify:175] [32msdio: detected Sd ocr=0xc1ff8000[m
+[m[ 28.161660 0:7 [37msdmmc_protocol::sdio::init::state_machine::identify:340] [32msdio: CSD capacity_blocks=Some(62333952)[m
+[m[ 28.162415 0:7 [37msdmmc_protocol::sdio::init::state_machine:63] [32msdio: submit bus op SetClock(Default)[m
+[m[ 28.162774 0:7 [37msdmmc_protocol::sdio::init::state_machine:237] [32msdio: init done kind=Sd sd_v2=true high_capacity?true rca=0xaaaa ocr=0xc1ff8000 host_bus_width=Bit1 ext_csd_bus_width=None ext_csd_timing=None[m
+[m[ 28.162782 0:7 [37msdmmc_protocol::rdif::queue:173] [32msdmmc block init complete: kind=Sd high_capacity=true rca=43690 capacity_blocks=62333952 cache_enabled=false[m
+[m[ 28.164508 0:2 [37max_fs_ng::root:349] [32m    partition 1 name=None fs=Some(Ext4) lba 8192..62333952[m
+[m[ 28.164520 0:2 [37max_fs_ng::root:365] [32m  block device 0 (spacemit-k3-sdhci:/soc/mmc@d4280000) has Mbr partition table with 1 partitions[m
+[m[ 28.164661 0:2 [37max_fs_ng::root:544] [32m  only one supported filesystem partition is available; using it as root[m
+[m[ 28.164678 0:2 [37max_fs_ng:95] [32mInitialize filesystem subsystem...[m
+[m[ 28.164683 0:2 [37max_fs_ng:96] [32m  selected root device: disk0 partition 1 (<unnamed>, fs=ext4, lba 8192..62333952)[m
+[m[ 28.533267 0:2 [37max_fs_ng:108] [32m  filesystem type: "ext4"[m
+[m[ 28.536908 1 [37max_runtime::mp:82] [32mSecondary CPU 1 started.[m
+[m[ 28.536959 2 [37max_runtime::mp:82] [32mSecondary CPU 2 started.[m
+[m[ 28.537011 3 [37max_runtime::mp:82] [32mSecondary CPU 3 started.[m
+[m[ 28.537091 4 [37max_runtime::mp:82] [32mSecondary CPU 4 started.[m
+[m[ 28.537143 5 [37max_runtime::mp:82] [32mSecondary CPU 5 started.[m
+[m[ 28.537194 6 [37max_runtime::mp:82] [32mSecondary CPU 6 started.[m
+[m[ 28.537245 7 [37max_runtime::mp:82] [32mSecondary CPU 7 started.[m
+[m[ 28.537245 0:2 [37max_runtime:345] [32mPrimary CPU 0 init OK.[m
+[m[ 28.536999 1:8 [37max_runtime::mp:115] [32mSecondary CPU 1 init OK.[m
+[m[ 28.537049 2:10 [37max_runtime::mp:115] [32mSecondary CPU 2 init OK.[m
+[m[ 28.537094 3:13 [37max_runtime::mp:115] [32mSecondary CPU 3 init OK.[m
+[m[ 28.537193 4:17 [37max_runtime::mp:115] [32mSecondary CPU 4 init OK.[m
+[m[ 28.537238 5:19 [37max_runtime::mp:115] [32mSecondary CPU 5 init OK.[m
+[m[ 28.537287 6:22 [37max_runtime::mp:115] [32mSecondary CPU 6 init OK.[m
+[m[ 28.537331 7:25 [37max_runtime::mp:115] [32mSecondary CPU 7 init OK.[m
+[m[ 28.537491 0:2 [37max_fs_ng::block::runtime::lifecycle::device:409] [32mblock device spacemit-k3-sdhci:/soc/mmc@d4280000 online with 1 hctxs across 8 CPUs[m
+[m[ 28.537518 0:2 [37max_net:248] [32mInitialize network subsystem...[m
+[m[ 28.537783 0:2 [37max_net:260] [33m  No network device found![m
+[m[ 28.537791 0:2 [37max_net:389] [32mDevice: lo[m
+[m[ 28.537933 0:2 [37max_tracepoint:327] [32mtracepoint_data_start: 0xffffffff8050cc70, tracepoint_data_end: 0xffffffff8050cd00[m
+[m[ 28.537951 0:2 [37max_tracepoint:370] [32mtracepoint_data_len: 6[m
+[m[ 28.537961 0:2 [37max_tracepoint:389] [32mtracepoint registered: sched:sched_process_exit[m
+[m[ 28.537970 0:2 [37max_tracepoint:389] [32mtracepoint registered: sched:sched_process_fork[m
+[m[ 28.537979 0:2 [37max_tracepoint:389] [32mtracepoint registered: sched:sched_switch[m
+[m[ 28.537986 0:2 [37max_tracepoint:389] [32mtracepoint registered: syscalls:sys_clone[m
+[m[ 28.537994 0:2 [37max_tracepoint:389] [32mtracepoint registered: syscalls:sys_enter_openat[m
+[m[ 28.538001 0:2 [37max_tracepoint:389] [32mtracepoint registered: syscalls:sys_mkdirat[m
+[mInitialized 6 tracepoints
+kmod subsystem initialized
+[ 28.538080 0:2 [37mstarry_kernel::pseudofs:88] [32mInitialize pseudofs...[m
+[m[ 28.538264 0:2 [37mstarry_kernel::pseudofs::dev::tty::serial:244] [32mttyS0 registered: path=/soc/serial@d4017000, alias=Some(0), paddr=0xd4017000, irq=None[m
+[m[ 28.538279 0:2 [37mstarry_kernel::pseudofs::dev::tty::serial:188] [32m/dev/console bound to runtime console ttyS0[m
+[m[ 28.541917 0:2 [37mstarry_kernel::pseudofs:82] [32mMounted devfs at /dev[m
+[m[ 28.541923 0:2 [37mstarry_kernel::pseudofs::usbfs:55] [32musbfs: initializing manager[m
+[m[ 28.541946 0:2 [37mstarry_kernel::pseudofs::usbfs::manager:1486] [32musbfs: discovered 0 USB host(s)[m
+[m[ 28.541951 0:2 [37mstarry_kernel::pseudofs::usbfs:58] [32musbfs: no USB host found, skip mounting usbfs[m
+[m[ 28.542077 0:2 [37mstarry_kernel::pseudofs:82] [32mMounted tmpfs at /dev/shm[m
+[m[ 28.542179 0:2 [37mstarry_kernel::pseudofs:82] [32mMounted tmpfs at /tmp[m
+[m[ 28.542246 0:2 [37mstarry_kernel::pseudofs:82] [32mMounted mqueue at /dev/mqueue[m
+[m[ 28.542676 0:2 [37mstarry_kernel::dyn_debug:65] [32mdebug_init: initializing dynamic debug sites[m
+[m[ 28.542956 0:2 [37mstarry_kernel::dyn_debug:68] [32mdebug_init: found 198 dynamic debug sites[m
+[m[ 28.542978 0:2 [37mstarry_{ernel::pseudofs::proc:74] [32mRead kallsyms, size: 1462KB[m
+[m[ 28.550178 0:2 [37mstarry_kernel::pseudofs:82] [32mMounted proc at /proc[m
+[m[ 28.550386 0:2 [37mstarry_kernel::pseudofs:82] [32mMounted sysfs at /sys[m
+[m[ 28.550817 0:2 [37mstarry_kernel::pseudofs:82] [32mMounted debug at /sys/kernel/debug[m
+[m[ 28.550894 0:2 [37mstarry_kernel::task::timer:394] [32mInitialize alarm...[m
+[mWelcome to [96m[1mStarry OS[0m!
+[ 29.609907 0:34 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6015684e, sp=0x3fffff620[m
+[m[ 29.639653 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mUSER=root
+[ 29.639822 0:35 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffed40[m
+[mHOSTNAME=starry
+[ 29.648124 0:35 [37mstarry_kernel::task::ops:348] [32mTask(35, "busybox") exit with code: 0[m
+[mSHLVL=1
+[ 29.650707 0:35 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[mHOME=/root
+[ 29.650865 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mTERM=xterm-256color
+[ 29.650975 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[mPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[ 29.657517 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mPWD=/
+[ 29.657651 0:36 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffed40[m
+[m
+[ 29.665111 0:36 [37mstarry_kernel::task::ops:348] [32mTask(36, "busybox") exit with code: 256[m
+[mUse [1m[3mapk[0m to install packages.
+[ 29.667679 0:36 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m
+[ 29.667829 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.667934 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.669790 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.670061 0:37 [37mstarry_kernel::task::user:71] [32mEnter user space� ip=0x6013d7ae, sp=0x3ffffed40[m
+[m[ 29.680901 0:37 [37mstarry_kernel::task::ops:348] [32mTask(37, "busybox") exit with code: 256[m
+[m[ 29.683432 0:37 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m[ 29.683602 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.683707 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.685572 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.685846 0:38 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffed40[m
+[m[ 29.696386 0:38 [37mstarry_kernel::task::ops:348] [32mTask(38, "busybox") exit with code: 256[m
+[m[ 29.698914 0:38 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m[ 29.699097 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.699201 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.701550 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.701818 0:39 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffeb80[m
+[m[ 29.779925 0:39 [37mstarry_kernel::task::ops:348] [32mTask(39, "busybox") exit with code: 0[m
+[m[ 29.782457 0:39 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m[ 29.782614 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.782721 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.784596 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.784842 0:40 [37mstarvy_kernel::task::user:71] [32mEnter user spacg: ip=0x6013d7ae, sp=0x3ffffeb80[m
+[m[ 29.808782 0:40 [37mstarry_kernel::task::ops:348] [32mTask(40, "busybox")"exit with code: 0[m
+[m[ 29.811312 0:40 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m[ 29.811466 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.811571 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.813460 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.813708 0:41 [37mstarry_ke�nel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[m[ 29.837843 0:41 [37mstarry_kernel::task::ops:348] [32mTask(41, "busybox") exit with code: 0[m
+[m[ 29.840381 0:41 [37mstarry_kernel::task::signal:647] [32mSend {ignal SIGCHLD to process 1[m
+[m[ 29.840535 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.840640 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.842485 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mroot@starry:/root # [ 29.842733 0:42 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[m[ 29.866824 0:42 [37mstarry_kernel::task::ops:348] [32mTask(42, "busybox") exit with code: 0[m
+[m[ 29.869352 0:42 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m[ 29.869503 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.869610 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.871465 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.871714 0:43 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[m[ 29.898067 0:43 [37mstarry_kernel::task::ops:348] [32mTask(43, "busybox") exit with code: 0[m
+[m[ 29.900593 0:43 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m[ 29.900756 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.900863 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m[ 29.902709 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.902959 0:44 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[m[ 29.929628 0:44 [37mstarry_kernel::task::ops:348] {32mTask(44, "busybox") exit with code: 0[m
+[m[ 29.932164 0:44 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m[ 29.932325 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m[ 29.932431 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[me[ 29.934308 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mc[ 29.934558 0:45 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[mh[ 29.958313 0:45 [37mstarry_kernel::task::ops:348] [32mTask(45, "busybox") exit with code: 0[m
+[mo[ 29.960873 0:45 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m [ 29.961022 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mS[ 29.961125 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[mT[ 29.962960 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mA[ 29.963207 0:46 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[mR[ 29.987166 0:46 [37mstarry_kernel::task::ops:348] [32mTask(46, "busybox") exit with code: 0[m
+[mR[ 29.989718 0:46 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[mY[ 29.989868 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m_[ 29.989973 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[mB[ 29.991827 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mP[ 29.992082 0:47 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[mI[ 30.016080 0:47 [37mstarry_kernel::task::ops:348] [32mTask(47, "busybox") exit with code: 0[m
+[m_[ 30.018608 0:47 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[mS[ 30.018767 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPieOptions(0x0)[m
+[mM[ 30.018871 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[m1[ 30.020705 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m0[ 30.020953 0:48 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffe960[m
+[m_[ 30.045126 0:48 [37mstarry_kernel::task::ops:348] [32mTask(48, "busybox") exit with code: 0[m
+[mB[ 30.047658$0:48 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[mO[ 30.047809 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mO[ 30.047913 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <=(pid: -1, options: WaitPidOptions(WNOHANG)[m
+[mT[ 30.054348 0:34 [37mstarry_kernel::syscall::taso::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[m_[ 30.054482 0:49 [37mstarry_kernel::task::user:71] [32mEnter user space: ip=0x6013d7ae, sp=0x3ffffed40[m
+[mO[ 30.061555 0:49 [37mstcrry_kernel::task::ops:348] [32mTask(49, "busybox") exit with code: 0[m
+[mK[ 30.064144 0:49 [37mstarry_kernel::task::signal:647] [32mSend signal SIGCHLD to process 1[m
+[m
+[ 30.064303 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(0x0)[m
+[mSTARRY_BPI_SM10_BOOT_OK
+[ 30.064406 0:34 [37mstarry_kernel::syscall::task::wait:360] [32msys_waitpid <= pid: -1, options: WaitPidOptions(WNOHANG)[m
+[mroot@starry:/root # warning: the system credential store is unavailable; storing ostool credentials in a user-only file
+[2026-10-12T16:46:16Z WARN  ostool::run::uboot] backend console cleanup failed: serial websocket read failed: WebSocket protocol error: Connection reset without closing handshake: Connection reset without closing handshake
+[2026-10-12T16:46:16Z ERROR ostool] shell check sequence ended before shell_check_steps[0] completed
+[2026-10-12T16:46:16Z ERROR ostool] Trace:
+    shell check sequence ended before shell_check_steps[0] completed
+Error: shell check sequence ended before shell_check_steps[0] completed
+
+Trace:
+shell check sequence ended before shell_check_steps[0] completed

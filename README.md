@@ -1,63 +1,67 @@
-# 基于 Starry 的机器人应用 —— 复现实验仓库
+# 基于 Starry 的机器人应用
 
-操作系统专题训练（2026 秋）大作业。基准项目为 [k3x-HERA-RT](https://github.com/Dirinkbottle/k3x-HERA-RT)（文档：[dirinkbottle.github.io/k3x-HERA-RT](https://dirinkbottle.github.io/k3x-HERA-RT/)）：在 SpacemiT K3（RISC-V，X100 通用核 + A100 AI 核）上把 AI 算力纳入 StarryOS 内核统一调度。
+操作系统专题训练（2026 秋）大作业。基准项目 [k3x-HERA-RT](https://github.com/Dirinkbottle/k3x-HERA-RT)：在 SpacemiT K3（RISC-V，X100 通用核 + A100 AI 核）上把 AI 算力纳入 StarryOS 内核统一调度。本仓库覆盖两个阶段：QEMU 复现与真板（BananaPi BPI-SM10）实验。
 
-本仓库在 **QEMU(riscv64)** 上复现了基准系统中不依赖真板硬件的部分，并完成 ggml F32 MatMul 桥接的版本适配。
+## 结果
 
-## 复现结果
+| 任务 | 状态 | 证据 |
+| --- | --- | --- |
+| #1 QEMU 启动 StarryOS 到 shell | ✅ | `docs/runs/boot.log` |
+| #2 k3_airunner + k3_test 最小闭环（DAG→内核调度→数值验证） | ✅ | `docs/runs/k3_test.log` |
+| #3 k3_ggml_bridge F32 MatMul 桥接（适配旧 API，修复转置 stride） | ✅ | `docs/runs/bridge_demo.log` |
+| #4 真板 StarryOS 启动（TFTP+bootm，16 核全部上线） | ✅ | `docs/runs/board/starryos-first-boot.log` |
+| #5 用户态 RVV 内核使能（sstatus.VS，修复真板 SIGILL） | ✅ | `patches/tgoskits-bananapi-heralab.patch` |
+| #6 X100 vs A100 实测（VLEN/亲和性/GFLOPS） | ✅ | `docs/runs/board/x100-vs-a100-bench.txt` |
+| #7 llama.cpp riscv64 musl 交叉编译（静态 llama-cli 9.7MB） | ✅ | `env/bin/build-llama-rv.sh`、`patches/llama-cpp-riscv-zig.patch` |
+| #8 首次真板 LLM 推理（模型已上板，SD 降速内核验证中） | 🔧 | 见下"当前进度" |
 
-| 任务 | 内容 | 状态 | 证据 |
-| --- | --- | --- | --- |
-| #1 | StarryOS 在 QEMU 启动到 shell | ✅ | `docs/runs/boot.log` |
-| #2 | /dev/k3_airunner + k3_test 最小闭环（建 DAG → 提交 → 内核调度 → CPU fallback → completion → 数值验证） | ✅ | `docs/runs/k3_test.log` |
-| #3 | k3_ggml_bridge F32 MatMul 桥接路径（从上游 88ae696 提取并适配 171c70e 旧 API；修复 RHS 转置 stride 语义） | ✅ | `docs/runs/bridge_demo.log` |
-| #4 | llama.cpp 小模型（加分项）/ A100、YOLOv5（真板） | 未做 | 等待真板 |
-
-## 仓库布局
+## 布局
 
 ```
-├── README.md               # 本文件
-├── docs/runs/              # 运行证据日志（QEMU 实际输出）
-├── env/
-│   ├── env.sh              # 自包含构建环境入口（source 后使用）
-│   └── bin/                # 工具 wrapper 与复现脚本
-├── patches/
-│   ├── tgoskits-dev.patch      # 对 tgoskits@dev 的适配改动
-│   └── k3x-171c70e.patch       # 对 k3x-HERA-RT@171c70e 的适配改动
-└── src/
-    ├── k3_ggml_bridge/     # ggml F32 MatMul 桥接（核心新代码）
-    └── bridge_demo/        # 桥接验证程序
+├── docs/runs/            # 运行证据（QEMU + 真板）
+├── env/bin/              # 工具脚本：QEMU 复现(run-closed-loop)、真板操作(board-console/flash-*)、llama 构建
+├── patches/              # 阶段一: tgoskits-dev / k3x-171c70e；阶段二: tgoskits-bananapi-heralab / llama-cpp-riscv-zig
+└── src/                  # k3_ggml_bridge / bridge_demo（阶段一）、rv-bench（阶段二基准）
 ```
 
-## 复现步骤
+## 复现（QEMU）
 
-前置：Linux x86_64（Ubuntu 22.04 实测），git、clang、curl、debugfs(e2fsprogs)；全程不需要 sudo 安装任何系统包。
+Ubuntu 22.04 x86_64，无需 sudo 装包。
 
 ```bash
-# 1. 克隆两个上游仓库（必须为同级目录），锁定到配套版本
-git clone https://github.com/Dirinkbottle/tgoskits.git
-cd tgoskits && git checkout 4b23208 && cd ..
-git clone https://github.com/Dirinkbottle/k3x-HERA-RT.git
-cd k3x-HERA-RT && git checkout 171c70e && cd ..
-
-# 2. 应用本仓库的适配补丁
+git clone https://github.com/Dirinkbottle/tgoskits.git && cd tgoskits && git checkout 4b23208 && cd ..
+git clone https://github.com/Dirinkbottle/k3x-HERA-RT.git && cd k3x-HERA-RT && git checkout 171c70e && cd ..
 cd tgoskits     && git apply <repo>/patches/tgoskits-dev.patch  && cd ..
 cd k3x-HERA-RT  && git apply <repo>/patches/k3x-171c70e.patch   && cd ..
-
-# 3. 把本仓库的新代码放进 k3x-HERA-RT（与上游 crate 并列）
 cp -r <repo>/src/k3_ggml_bridge <repo>/src/bridge_demo k3x-HERA-RT/
-
-# 4. 按环境脚本注释准备自包含工具链（Rust nightly-2026-05-28、
-#    qemu-system-riscv64 9.x、riscv64-musl 头文件；详见 env/bin/ 各脚本头部注释）
-#    rootfs 取自 https://github.com/Starry-OS/rootfs release 20260214
-
-# 5. 一键复现（启动 StarryOS 并自动运行 bridge_demo）
-<repo>/env/bin/run-closed-loop.sh bg   # 日志见 runs/ 目录
+# 准备自包含工具链（Rust nightly-2026-05-28、qemu-system-riscv64、riscv64-musl 头文件，
+# 见 env/bin/ 各脚本头部注释；rootfs 取 Starry-OS/rootfs release 20260214）
+<repo>/env/bin/run-closed-loop.sh bg
 ```
 
-## 关键注意事项
+## 复现（真板）
 
-- **版本配对**：tgoskits@dev(4b23208, 2026-07-01) 必须配 k3x-HERA-RT@171c70e(2026-06-25)；用 k3x 主分支（09-14）会因 K3SchedulerOps trait 改版编译失败。
-- **QEMU 必须 `-smp 16`**：内核把 scheduler worker 亲和性固定在 CPU10（真板 AI 核），单核下线程永远不会被调度。
-- **旧内核 backend 不解释 MatMul flags**：RHS 转置存储需在 bridge 里交换行/列 stride 再提交（见 `src/k3_ggml_bridge/src/lib.rs` 注释）。
-- k3_test 图后的"共享区保活"阶段会挂起且影响后续提交，与 bridge_demo 分开两次启动运行。
+```bash
+git clone -b bananapi https://github.com/rcore-os/tgoskits.git && cd tgoskits
+git apply <repo>/patches/tgoskits-bananapi-heralab.patch
+# 依赖: u-boot-tools device-tree-compiler；构建配置 max_cpu_num=16
+cargo starry build --config os/StarryOS/configs/board/bananapi-bpi-sm10.toml
+# 板卡操作（ostool 平台客户端，详见脚本注释）:
+#   board-console.sh  — 串口会话（script+pty，支持 send/wait 驱动）
+#   session-put.py    — 会话文件上传（配 U-Boot tftpboot 使用）
+#   flash-rootfs.sh   — 自制 rootfs 一键刷写（上传→tftp→mmc write）
+#   flash-model.sh    — 大文件分块刷写（>64MiB 自动切块、断点续传）
+# 基准: /bin/rv-bench <cpu> 256 3   （matmul）；/bin/rv-bench probe <cpu>（VLEN/亲和性探针）
+```
+
+## 要点与结论
+
+- **版本配对**：tgoskits@dev(4b23208) 必须配 k3x-HERA-RT@171c70e；QEMU 必须 `-smp 16`（worker 钉 CPU10）。
+- **用户态 RVV**：内核原只设 sstatus.FS 不设 VS，真板上用户态向量指令一律 SIGILL（QEMU 不查 VS 故不暴露）；补丁在 axcpu 用户上下文初始化加 `VS::Initial`。暂未做每任务向量寄存器保存/恢复（实验性，钉核场景够用）。
+- **X100 vs A100 实测**：亲和性真实有效（钉核后 200 万采样零跳变）；X100 VLEN 256 约 4 GFLOPS，A100 VLEN 1024 同代码仅 0.5-0.8 GFLOPS——A100 普通 RVV 反而慢约 5 倍。**结论：A100 提速必须走 IME 自定义指令**（llama.cpp 已有 `GGML_CPU_RISCV64_SPACEMIT` 路径，需 SpacemiT 定制 GCC≥15）。
+- **平台坑**：会话约 5 分钟强制回收、单文件上传限 64MiB（分块解决）、U-Boot `mmc write` 参数须 0x 前缀十六进制、网口初始化抖动重上电即恢复。
+- **SD 稳定性**：大流量读触发 CRC 错误（内核驱动缺 SpacemiT 延迟调谐），已用 ×4 分频保守修复；正式方案为移植调谐逻辑。
+
+## 当前进度
+
+模型（SmolLM2-135M Q4）与 llama-cli 已刷入真板 rootfs；SD 降速内核已编好待部署验证，通过后即可完成首次真板推理。下一步：真板推理基准 → SpacemiT GCC 的 IME 路线 → k3_airunner 真板移植 → VLA 组合栈。

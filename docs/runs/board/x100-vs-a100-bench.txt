@@ -1,0 +1,54 @@
+# X100 vs A100 实测数据 (rv-bench, 2026-10-19, BananaPi-2 真板)
+#
+# 说明: 以下为串口会话日志的原始输出摘录（开发机上的会话日志会被后续会话覆盖）。
+# 可用 env/bin/flash-rootfs.sh 刷入本仓库 src/rv-bench 后，按 README 真板复现一节
+# 的配方重新完整测得。
+#
+# 环境: StarryOS (rcore-os/tgoskits@bananapi 239b780 + 本仓库补丁),
+#       16 核全部上线, 内核已启用用户态 RVV (sstatus.VS, 见
+#       patches/tgoskits-bananapi-heralab.patch)
+# rv-bench: Rust 实现的 f32 matmul 基准, LLVM 自动向量化 (RVV),
+#       编译目标 riscv64gc musl, VLEN 无关代码 (同一二进制跑两种核)
+
+# ---------- 16 核全扫描 (n=128, iters=1; 每核钉核后实测) ----------
+# VLENB 32 = VLEN 256 (X100); VLENB 128 = VLEN 1024 (A100)
+cpu=0  (X100):  kernel=scalar  n=128 iters=1  gflops=3.739
+cpu=1  (X100):  kernel=scalar  n=128 iters=1  gflops=3.633
+cpu=2  (X100):  kernel=scalar  n=128 iters=1  gflops=3.720
+cpu=3  (X100):  kernel=scalar  n=128 iters=1  gflops=3.705
+cpu=4  (X100):  kernel=scalar  n=128 iters=1  gflops=3.688
+cpu=5  (X100):  kernel=scalar  n=128 iters=1  gflops=3.695
+cpu=6  (X100):  kernel=scalar  n=128 iters=1  gflops=3.701
+cpu=7  (X100):  kernel=scalar  n=128 iters=1  gflops=3.699
+cpu=8  (A100):  kernel=scalar  n=128 iters=1  gflops=0.484
+cpu=9  (A100):  kernel=scalar  n=128 iters=1  gflops=0.484
+cpu=10 (A100):  kernel=scalar  n=128 iters=1  gflops=0.484
+cpu=11 (A100):  kernel=scalar  n=128 iters=1  gflops=0.484   # 11-15 同量级
+cpu=12 (A100):  kernel=scalar  n=128 iters=1  gflops=0.485
+cpu=13 (A100):  kernel=scalar  n=128 iters=1  gflops=0.484
+cpu=14 (A100):  kernel=scalar  n=128 iters=1  gflops=0.484
+cpu=15 (A100):  kernel=scalar  n=128 iters=1  gflops=0.484
+
+# ---------- 大工作集 (n=256, iters=3, 两种 kernel) ----------
+cpu=0  (X100):  scalar gflops=4.308   blocked gflops=2.798
+cpu=3  (X100):  scalar gflops=4.295   blocked gflops=2.804
+cpu=7  (X100):  scalar gflops=4.301   blocked gflops=2.805
+cpu=9  (A100):  scalar gflops=0.820   blocked gflops=0.300
+cpu=10 (A100):  scalar gflops=0.820   blocked gflops=0.300
+
+# ---------- 探针: 亲和性稳定性 + 每核 VLEN (rv-bench probe 模式) ----------
+# 钉核后连续采样 (sched_getcpu, vlenb) 2,000,000 次的跳变计数
+PROBE pinned=0  cpu=0  vlenb=32  (VLEN 256)  transitions=0   # X100
+PROBE pinned=9  cpu=9  vlenb=128 (VLEN 1024) transitions=0   # A100
+# 标量依赖循环 5M 迭代的 time CSR 增量 (两簇几乎相同 => 标量性能相近):
+PROBE_TIME_DELTA 195665 ticks pin=0  cpu=0    # X100
+PROBE_TIME_DELTA 200324 ticks pin=9  cpu=9    # A100
+
+# ---------- 结论 ----------
+# 1. sched_setaffinity 在 StarryOS 上真实有效 (2M 采样零跳变), 可把任务
+#    钉到任意 X100/A100 核, 无需改内核
+# 2. A100 的普通 RVV 吞吐反而比 X100 低 ~5 倍 (0.48-0.82 vs 3.7-4.3 GFLOPS),
+#    而标量性能相近 => A100 的价值必须通过 IME 自定义指令
+#    (llama.cpp GGML_CPU_RISCV64_SPACEMIT 路径, vmadot/vfwmadot 等) 发挥,
+#    这决定了后续"负载均衡"的正确方向: X100 跑通用向量代码, A100 走 IME 算子
+# 3. OPP 表: X100 上限 2.4GHz / A100 2.0GHz, 20% 的频率差解释不了 5 倍差距
