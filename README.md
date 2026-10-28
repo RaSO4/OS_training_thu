@@ -13,15 +13,18 @@
 | #5 用户态 RVV 内核使能（sstatus.VS，修复真板 SIGILL） | ✅ | `patches/tgoskits-bananapi-heralab.patch` |
 | #6 X100 vs A100 实测（VLEN/亲和性/GFLOPS） | ✅ | `docs/runs/board/x100-vs-a100-bench.txt` |
 | #7 llama.cpp riscv64 musl 交叉编译（静态 llama-cli 9.7MB） | ✅ | `env/bin/build-llama-rv.sh`、`patches/llama-cpp-riscv-zig.patch` |
-| #8 首次真板 LLM 推理（模型已上板，SD 降速内核验证中） | 🔧 | 见下"当前进度" |
+| #8 首次真板 LLM 推理 | ✅ | TinyStories-3M Q4 生成 32 token 正常退出（ramfs 路线，10-26） |
+| #9 TinyVLA：语言条件导航闭环 + 性能优化 + 内核向量上下文修复 | ✅ | `docs/tiny-vla.md`、`docs/runs/board/tiny-vla/` |
 
 ## 布局
 
 ```
 ├── docs/runs/            # 运行证据（QEMU + 真板）
+├── docs/tiny-vla.md      # TinyVLA 说明（任务/模型/训练/板上数据）
+├── docs/k3-remote-usage-guide.md  # 开发板平台使用指南（给新同学）
 ├── env/bin/              # 工具脚本：QEMU 复现(run-closed-loop)、真板操作(board-console/flash-*)、llama 构建
 ├── patches/              # 阶段一: tgoskits-dev / k3x-171c70e；阶段二: tgoskits-bananapi-heralab / llama-cpp-riscv-zig
-└── src/                  # k3_ggml_bridge / bridge_demo（阶段一）、rv-bench（阶段二基准）
+└── src/                  # k3_ggml_bridge / bridge_demo（阶段一）、rv-bench、tiny-vla（阶段二）
 ```
 
 ## 复现（QEMU）
@@ -49,19 +52,26 @@ cargo starry build --config os/StarryOS/configs/board/bananapi-bpi-sm10.toml
 # 板卡操作（ostool 平台客户端，详见脚本注释）:
 #   board-console.sh  — 串口会话（script+pty，支持 send/wait 驱动）
 #   session-put.py    — 会话文件上传（配 U-Boot tftpboot 使用）
+#   flash-file.sh     — 单文件刷到 SD 裸扇区（内核/DTB/小二进制）
 #   flash-rootfs.sh   — 自制 rootfs 一键刷写（上传→tftp→mmc write）
 #   flash-model.sh    — 大文件分块刷写（>64MiB 自动切块、断点续传）
+#   board-fastboot.sh — 从 SD 裸扇区直接 mmc read+booti，18 秒到 shell
 # 基准: /bin/rv-bench <cpu> 256 3   （matmul）；/bin/rv-bench probe <cpu>（VLEN/亲和性探针）
 ```
 
 ## 要点与结论
 
 - **版本配对**：tgoskits@dev(4b23208) 必须配 k3x-HERA-RT@171c70e；QEMU 必须 `-smp 16`（worker 钉 CPU10）。
-- **用户态 RVV**：内核原只设 sstatus.FS 不设 VS，真板上用户态向量指令一律 SIGILL（QEMU 不查 VS 故不暴露）；补丁在 axcpu 用户上下文初始化加 `VS::Initial`。暂未做每任务向量寄存器保存/恢复（实验性，钉核场景够用）。
+- **用户态 RVV**：内核原只设 sstatus.FS 不设 VS，真板上用户态向量指令一律 SIGILL（QEMU 不查 VS 故不暴露）；补丁在 axcpu 用户上下文初始化加 `VS::Initial`。后来多进程向量负载暴露寄存器互踩，又在 TaskContext 里补了每任务的 v0-v31/vcsr/vtype/vl/vstart 保存恢复（同补丁，见 `docs/tiny-vla.md`）。
+- **TinyVLA**：语言条件导航闭环 99.8%；优化四步（vfmacc 点积、int8、模型压缩、多进程绑核）把单核决策从 3,461/s 提到 22,196/s，8 核 175,123/s。数据在 `docs/runs/board/tiny-vla/`。
 - **X100 vs A100 实测**：亲和性真实有效（钉核后 200 万采样零跳变）；X100 VLEN 256 约 4 GFLOPS，A100 VLEN 1024 同代码仅 0.5-0.8 GFLOPS——A100 普通 RVV 反而慢约 5 倍。**结论：A100 提速必须走 IME 自定义指令**（llama.cpp 已有 `GGML_CPU_RISCV64_SPACEMIT` 路径，需 SpacemiT 定制 GCC≥15）。
 - **平台坑**：会话约 5 分钟强制回收、单文件上传限 64MiB（分块解决）、U-Boot `mmc write` 参数须 0x 前缀十六进制、网口初始化抖动重上电即恢复。
 - **SD 稳定性**：大流量读触发 CRC 错误（内核驱动缺 SpacemiT 延迟调谐），已用 ×4 分频保守修复；正式方案为移植调谐逻辑。
 
 ## 当前进度
 
-模型（SmolLM2-135M Q4）与 llama-cli 已刷入真板 rootfs；SD 降速内核已编好待部署验证，通过后即可完成首次真板推理。下一步：真板推理基准 → SpacemiT GCC 的 IME 路线 → k3_airunner 真板移植 → VLA 组合栈。
+- **SD 稳定性**：移植 U-Boot 的 SDHCI 延迟调谐（DLINE pull-up/mux + 本板实测 delaycode tx=31/rx=69）并把 SD 时钟保守化 ×4。实验画像：单流顺序读稳定（cat 105MB 零错误），多线程 mmap 缺页风暴触发 CRC 后控制器楔死——根因在请求层并发处理，时钟/调谐是缓解。
+- **ramfs 路线**：`mount -t ramfs` + 模型内存副本，推理全程零 SD 错误。首次真板 LLM 推理（TinyStories-3M Q4）10-26 跑通，生成 32 token 后正常退出。
+- **向量上下文**：上述崩溃根因（任务切换不保存向量寄存器）已在 axcpu 修复，8 进程向量负载稳定，详见 `docs/tiny-vla.md`。
+- 板卡现状：10-26 晚 SD 卡在平台上检测不到（U-Boot 与 Linux 均无 mmcblk 设备），StarryOS 暂时起不来；上面的结果都在此之前测得并留档。
+- 下一步：SD 恢复后补 llama-bench（X100/A100）与向量版 llama.cpp 复测；A100 的 IME 路线（SpacemiT GCC≥15）。

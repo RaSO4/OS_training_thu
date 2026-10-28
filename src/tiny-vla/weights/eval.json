@@ -1,0 +1,8 @@
+{
+  "episodes": 1500,
+  "success": 0.9973333333333333,
+  "wrong_goal": 0.0,
+  "timeout": 0.0026666666666666666,
+  "avg_steps": 12.517333333333333,
+  "avg_collisions": 0.0
+}

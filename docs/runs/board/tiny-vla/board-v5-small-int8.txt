@@ -1,0 +1,39 @@
+# TinyVLA board v5 — small model (128/64) + int8 + kernel vector context
+# 2026-10-26, BananaPi BPI-SM10 / K3, StarryOS
+# Model: 640 -> 128 -> 64 -> 4, ~90k MACs/step, f32 weights 363,660 B,
+#        static binary ~820 KB.  Distance-gain prior retained.
+# Training: 12k maps, 24 epochs, 2 DAgger rounds; held-out closed loop 99.73%,
+#           colour grounding 100%.
+# Deployed: /bin/llama-bench = vector small int8, /bin/llama-cli = scalar small int8.
+
+## Correctness
+SELFTEST PASS samples=8 quant=true max_logit_err=1.382e0 max_color_err=4.768e-7
+Host closed loop (2000 episodes): 99.95% success, colour 100%.
+
+## Board X100 (batch=1, one process per core)
+# single process
+VLA_RESULT vector cpu0 eps=1000 success=0.9980 colour_acc=1.0000 avg_steps=11.69 \
+  steps_per_sec=22196.5 feature_ticks_per_step=34.1 forward_ticks_per_step=835.7
+# 8 processes, cpu0..7, 500 episodes each:
+# 21879.8 + 22028.2 + 22019.1 + 22024.6 + 21909.6 + 21896.0 + 21706.4 + 21659.5
+# = 175,123.2 steps/s aggregate, all success=1.0000, colour_acc=1.0000
+# ideal 8 x 22196.5 = 177,572; scaling efficiency 98.6%.
+
+## Board A100
+# scalar small int8 (cpu9): 300 eps, success=1.0000,
+#   steps_per_sec=1800.1, forward_ticks_per_step=12927.6
+# vector small int8 modelbench: ticks_per_call=824.9, samples_per_sec=29088.2;
+#   prints valid results then SIGSEGV at teardown (same A100 RVV issue).
+
+## Speedups
+# single small int8 22196.5 vs large int8 11839.9 = 1.87x
+# single small int8 22196.5 vs v1 3461.1            = 6.41x
+# 8-process small 175123.2 vs large 8-process 93933.9 = 1.86x
+# 8-process small 175123.2 vs v1 single 3461.1        = 50.6x
+
+## Final configuration
+- X100: vector small int8, one process per core, `--quant i8 --batch 1 --threads 1`.
+- A100: scalar small int8 is stable but slow; plain RVV is unstable under
+  preemption.  A100 belongs on the IME path, not this kernel.
+- In-process threads still fail at startup (StarryOS thread/TLS); multi-process
+  pinning is the stable scaling mechanism.

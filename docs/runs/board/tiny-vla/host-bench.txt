@@ -1,0 +1,31 @@
+# Host closed-loop benchmark (x86_64, final weights)
+## --batch 1 --threads 1
+VLA_RESULT mode=bench episodes=2000 threads=1 batch=1 success=0.9980 wrong_goal=0.0000 timeout=0.0020 colour_acc=1.0000 avg_steps=11.60 avg_collisions=0.000 steps_per_sec=5731.9 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=23195 wall_secs=4.047
+## --batch 8 --threads 1
+VLA_RESULT mode=bench episodes=2000 threads=1 batch=8 success=0.9980 wrong_goal=0.0000 timeout=0.0020 colour_acc=1.0000 avg_steps=11.62 avg_collisions=0.000 steps_per_sec=5730.2 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=2904 wall_secs=4.054
+## --batch 32 --threads 1
+VLA_RESULT mode=bench episodes=2000 threads=1 batch=32 success=0.9980 wrong_goal=0.0000 timeout=0.0020 colour_acc=1.0000 avg_steps=11.70 avg_collisions=0.000 steps_per_sec=5727.6 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=732 wall_secs=4.086
+## --batch 8 --threads 4
+VLA_RESULT mode=bench episodes=8000 threads=4 batch=8 success=0.9978 wrong_goal=0.0000 timeout=0.0022 colour_acc=1.0000 avg_steps=11.77 avg_collisions=0.000 steps_per_sec=20942.3 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=11767 wall_secs=4.494
+## --batch 32 --threads 8
+VLA_RESULT mode=bench episodes=16000 threads=8 batch=32 success=0.9984 wrong_goal=0.0000 timeout=0.0016 colour_acc=1.0000 avg_steps=11.75 avg_collisions=0.004 steps_per_sec=21919.6 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=5877 wall_secs=8.574
+# Residual-scale ablation (1000 episodes each)
+## residual=0.0
+VLA_RESULT mode=bench episodes=1000 threads=1 batch=8 success=1.0000 wrong_goal=0.0000 timeout=0.0000 colour_acc=1.0000 avg_steps=11.51 avg_collisions=0.000 steps_per_sec=5723.7 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=1439 wall_secs=2.011
+## residual=0.005
+VLA_RESULT mode=bench episodes=1000 threads=1 batch=8 success=1.0000 wrong_goal=0.0000 timeout=0.0000 colour_acc=1.0000 avg_steps=11.51 avg_collisions=0.000 steps_per_sec=5717.3 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=1439 wall_secs=2.013
+## residual=0.01
+VLA_RESULT mode=bench episodes=1000 threads=1 batch=8 success=0.9990 wrong_goal=0.0000 timeout=0.0010 colour_acc=1.0000 avg_steps=11.56 avg_collisions=0.000 steps_per_sec=5719.8 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=1446 wall_secs=2.021
+## residual=0.02
+VLA_RESULT mode=bench episodes=1000 threads=1 batch=8 success=0.9980 wrong_goal=0.0000 timeout=0.0020 colour_acc=1.0000 avg_steps=11.61 avg_collisions=0.000 steps_per_sec=5722.0 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=1451 wall_secs=2.029
+## residual=0.05
+VLA_RESULT mode=bench episodes=1000 threads=1 batch=8 success=0.9970 wrong_goal=0.0000 timeout=0.0030 colour_acc=1.0000 avg_steps=11.66 avg_collisions=0.000 steps_per_sec=5722.9 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=1458 wall_secs=2.038
+## residual=0.2
+VLA_RESULT mode=bench episodes=1000 threads=1 batch=8 success=0.9950 wrong_goal=0.0000 timeout=0.0050 colour_acc=1.0000 avg_steps=11.77 avg_collisions=0.000 steps_per_sec=5720.1 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=1471 wall_secs=2.057
+## residual=1.0
+VLA_RESULT mode=bench episodes=1000 threads=1 batch=8 success=0.9950 wrong_goal=0.0000 timeout=0.0050 colour_acc=1.0000 avg_steps=11.77 avg_collisions=0.000 steps_per_sec=5722.8 feature_ticks_per_step=0.0 forward_ticks_per_step=0.0 forward_ticks_per_call=0.0 forward_calls=1471 wall_secs=2.056
+# Pure model forward (modelbench)
+VLA_MODELBENCH cpu=-1 batch=1 iters=2000 ticks_per_call=0.0 ticks_per_sample=0.00 calls_per_sec=5811.5 samples_per_sec=5811.5 wall_secs=0.3441 checksum=7293.238770
+VLA_MODELBENCH cpu=-1 batch=8 iters=2000 ticks_per_call=0.0 ticks_per_sample=0.00 calls_per_sec=726.4 samples_per_sec=5811.5 wall_secs=2.7532 checksum=7293.238770
+VLA_MODELBENCH cpu=-1 batch=32 iters=2000 ticks_per_call=0.0 ticks_per_sample=0.00 calls_per_sec=181.9 samples_per_sec=5821.5 wall_secs=10.9937 checksum=7293.238770
+VLA_MODELBENCH cpu=-1 batch=64 iters=2000 ticks_per_call=0.0 ticks_per_sample=0.00 calls_per_sec=90.9 samples_per_sec=5816.0 wall_secs=22.0081 checksum=7293.238770

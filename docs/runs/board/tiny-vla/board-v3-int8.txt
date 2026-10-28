@@ -1,0 +1,44 @@
+# TinyVLA board v3 — int8 quantisation (large 256/128 model)
+# 2026-10-26, BananaPi BPI-SM10 / K3, StarryOS
+# int8: per-output-row weight scale, per-sample activation scale, i32 accumulation.
+#       vector build -> vle8 + vsext.vf2 + vwmacc.vv
+# Binaries: /bin/llama-bench = vector int8, /bin/llama-cli = scalar int8
+
+## Correctness
+SELFTEST PASS samples=8 quant=true max_logit_err=1.452e0 max_color_err=4.768e-7
+(quantised logits differ from f32 by up to 1.45, but argmax/closed loop are intact;
+ 2000-episode host closed loop with --quant i8: 100.0% success)
+
+## Pure forward (modelbench, int8)
+# vector X100 cpu0
+batch=1 ticks_per_call=1725.8   samples_per_sec=13905.0 wall=0.144s
+batch=8 ticks_per_sample=1726.85 samples_per_sec=13897.7 wall=0.576s
+# vector A100 cpu9
+batch=1 ticks_per_call=1718.5   samples_per_sec=13962.5 wall=0.072s
+# scalar X100
+(closes at 3132.7 steps/s with ~7348 ticks/step; scalar int8 is not the fast path)
+
+## Closed loop (int8, X100)
+VLA_RESULT vector cpu0 batch=1 eps=1000 success=0.9980 colour_acc=1.0000 avg_steps=11.68 steps_per_sec=11839.9 feature_ticks_per_step=33.5 forward_ticks_per_step=1727.9
+VLA_RESULT scalar cpu0 batch=1 eps=500  success=0.9980 colour_acc=1.0000 avg_steps=11.78 steps_per_sec=3132.7 feature_ticks_per_step=43.1 forward_ticks_per_step=7348.2
+
+## Multi-process (int8, X100)
+# 4 processes cpu0..3, 500 episodes each: 11852.2 + 11851.3 + 11845.9 + (4th) ~= 47.5k steps/s,
+# all 99.8% success.  Near-linear.
+# 8 processes cpu0..7: crashed (no VLA_RESULT).  Vector state corruption across processes.
+# A100 single-process closed loop and 4 A100 processes: crashed with wild PC
+#   PageFaultFlags(EXECUTE) after printing modelbench results.
+#   => StarryOS does not save/restore per-task vector state (v0-31, vcsr).
+
+## Comparison
+# int8 X100 closed loop 11839.9 vs f32 v2 8848.7  = 1.34x
+# int8 X100 closed loop 11839.9 vs v1 3461.1      = 3.42x
+# int8 modelbench A100 13962.5 vs f32 A100 1784.9 = 7.82x; A100 == X100 with int8.
+
+## Interpretation
+- int8 is the right kernel for this workload: it halves weight bandwidth, uses
+  vwmacc, and removes the f32 A100 penalty.
+- The remaining instability is the kernel vector-context bug, not the model:
+  any multi-process/vector workload can corrupt v0-31 because the scheduler
+  neither saves nor restores vector registers.  Fix is in axcpu TaskContext
+  (v0-31 + vcsr, per-task state).

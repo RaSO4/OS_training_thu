@@ -1,0 +1,57 @@
+# TinyVLA board baseline (BananaPi BPI-SM10, SpacemiT K3, StarryOS)
+# 2026-10-26
+# Board binaries: /bin/llama-bench = vector build, /bin/llama-cli = scalar build
+# (injected by overwriting the data blocks of the original large files; see README)
+# Timebase: rdtime/time CSR; 1 tick ~= 1/24e6 s on this board (derived from steps/s).
+
+## Correctness
+SELFTEST PASS samples=8 max_logit_err=1.526e-5 max_color_err=4.768e-7   (vector build, X100)
+
+## Pure model forward (modelbench; no map/BFS)
+# vector, X100 cpu0
+VLA_MODELBENCH cpu0 batch=1 iters=2000 ticks_per_call=6814.0  samples_per_sec=3522.0 wall=0.568s
+VLA_MODELBENCH cpu0 batch=8 iters=1000 ticks_per_call=55049.0 ticks_per_sample=6881.12 samples_per_sec=3487.8 wall=2.294s
+# vector, A100 cpu9  (process prints results then exits 139 at teardown; see notes)
+VLA_MODELBENCH cpu9 batch=1 iters=1000 ticks_per_call=9075.5  samples_per_sec=2644.3 wall=0.378s
+VLA_MODELBENCH cpu9 batch=8 iters=500  ticks_per_call=71866.8 ticks_per_sample=8987.35 samples_per_sec=2671.6 wall=1.497s
+# scalar, X100 cpu0
+VLA_MODELBENCH cpu0 batch=1 iters=1000 ticks_per_call=19655.7 samples_per_sec=1221.0 wall=0.819s
+VLA_MODELBENCH cpu0 batch=8 iters=2000 ticks_per_call=52830.7 ticks_per_sample=6603.84 samples_per_sec=3634.2 wall=4.403s
+# scalar, A100 cpu9
+VLA_MODELBENCH cpu9 batch=1 iters=1000 ticks_per_call=19655.7 samples_per_sec=1221.0 wall=0.819s
+
+## Closed loop (bench: map generation + BFS + forward + dynamics)
+# vector X100 batch=8 threads=1: 100% success
+VLA_RESULT vector cpu0 batch=8 eps=500 success=1.0000 colour_acc=1.0000 avg_steps=11.77 steps_per_sec=3461.1 feature_ticks_per_step=42.5 forward_ticks_per_step=6808.6
+# scalar X100 batch=8 threads=1: 100% success
+VLA_RESULT scalar cpu0 batch=8 eps=500 success=1.0000 colour_acc=1.0000 avg_steps=11.77 steps_per_sec=3551.9 feature_ticks_per_step=50.0 forward_ticks_per_step=6619.0
+# scalar A100 batch=8 threads=1: 100% success, but batch does not help on A100
+VLA_RESULT scalar cpu9 batch=8 eps=300 success=1.0000 colour_acc=1.0000 avg_steps=11.69 steps_per_sec=1201.8 feature_ticks_per_step=125.9 forward_ticks_per_step=19677.1
+
+## Multi-process scaling (workaround for StarryOS thread/TLS crash)
+# 4 separate single-thread processes pinned to X100 cpu0..3, 200 episodes each, batch=8:
+# per-process ~3435-3545 steps/s, aggregate ~14,000 steps/s, all 100% success.
+# Near-linear scaling: 4 x 3540 ~= 14.2k steps/s.
+
+## Demo (vector build, X100)
+instruction: "find to the red zone"  true colour: red  start: (13,5)
+actions: left left left up up up
+result: success=true steps=6 collisions=0
+(captured in results/board-demo.log)
+
+## Notes / limitations
+1. `sched_getcpu` (syscall 168) returns -14 on StarryOS, so the programs print cpu=-14.
+   `sched_setaffinity` (122) does not report an error; multi-process scaling and
+   A100-vs-X100 timing differences indicate pinning is effective.
+2. Any multi-threaded run of the VLA binary (threads=2/4/8, pinned or unpinned,
+   vector or scalar) crashes immediately with SIGSEGV at VA 0x10 (READ) or 0x0
+   (WRITE). This is a StarryOS thread/TLS startup issue, not the RVV context bug:
+   the scalar build (no V instructions) crashes identically. Single-process
+   multi-env batch mode and multi-process pinning are the stable paths.
+3. The vector build on A100 completes the benchmark and prints valid results,
+   then exits with code 139 during teardown. Numbers are usable with that caveat.
+4. The matrix multiply is the bottleneck: feature building is ~50 ticks/step vs
+   ~6600 ticks/step of MLP forward on X100 batch=8.
+5. Vector build is ~2.9x faster than scalar at batch=1, but at batch=8 the scalar
+   build catches up (~6600 vs ~6800 ticks/sample). The current auto-vectorized
+   batch loop does not exploit RVV well; loop-order/quantization work is next.

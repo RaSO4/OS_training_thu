@@ -1,0 +1,11 @@
+# TinyVLA training summary
+train samples 198418, 31.2s
+eval after BC: {"episodes": 1500, "success": 0.998, "wrong_goal": 0.0, "timeout": 0.002, "avg_steps": 12.485333333333333, "avg_collisions": 0.0}
+colour grounding accuracy: 100.00%
+DAgger round 1/2 ...
+  collected 31915 samples
+eval after DAgger 1: {"episodes": 1500, "success": 0.998, "wrong_goal": 0.0, "timeout": 0.002, "avg_steps": 12.482, "avg_collisions": 0.0}
+DAgger round 2/2 ...
+  collected 31550 samples
+eval after DAgger 2: {"episodes": 1500, "success": 0.998, "wrong_goal": 0.0, "timeout": 0.002, "avg_steps": 12.486666666666666, "avg_collisions": 0.0}
+DONE {"episodes": 1500, "success": 0.998, "wrong_goal": 0.0, "timeout": 0.002, "avg_steps": 12.486666666666666, "avg_collisions": 0.0}

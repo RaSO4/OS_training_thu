@@ -1,0 +1,36 @@
+# TinyVLA board v4 — after the kernel RISC-V vector context switch
+# 2026-10-26, BananaPi BPI-SM10 / K3, StarryOS
+# Kernel patch: components/axcpu/src/riscv/vector.rs + TaskContext field
+#   saves/restores v0-v31, vcsr, vtype, vl, vstart per task.
+#   m1 per-register transfer (32 loads/stores), VLEN-agnostic.
+# Binaries: /bin/llama-bench = vector int8, /bin/llama-cli = scalar int8.
+
+## X100 (single process, int8, batch=1)
+SELFTEST PASS samples=8 quant=true max_logit_err=1.452e0 max_color_err=4.768e-7
+VLA_RESULT vector cpu0 batch=1 eps=300 success=0.9967 colour_acc=1.0000 avg_steps=11.75 steps_per_sec=11843.0 feature_ticks_per_step=33.4 forward_ticks_per_step=1727.8
+
+## X100 (8 independent processes, int8, cpu0..7, 300 episodes each)
+11690.6 + 11774.1 + 11771.7 + 11773.0 + 11743.7 + 11744.6 + 11754.6 + 11681.6
+= 93,933.9 steps/s aggregate, all success=0.9967, colour_acc=1.0000
+Near-linear: 8 x 11,843 = 94,744 ideal, 99.1% scaling efficiency.
+
+## A100 (cpu9)
+- scalar int8 closed loop: success=0.9967, steps_per_sec=859.0, forward 27,488 ticks/step.
+- vector int8 modelbench: ticks_per_call=1747.8, samples_per_sec=13730.0;
+  prints valid results, then exits with SIGSEGV at VA 0xffffff0000000000 (EXECUTE).
+- vector int8 closed loop / 4 processes: wild-PC SIGSEGV (EXECUTE) at random VAs.
+- Interpretation: the A100's plain-RVV user path is not stable under preemption even
+  with per-task vector state.  This matches the k3x-HERA-RT note about occasional
+  illegal stval on A100; its intended path is IME, not general RVV.
+  A100 scalar (no user V instructions) is stable.
+
+## Kernel effect
+- Before: 8-process X100 vector int8 crashed (IllegalInstruction at vwmacc, then wild PC).
+- After: 8/8 processes complete, 99.67% success.  The fix was missing
+  vtype/vl/vstart in the vector context; reading them before the temporary
+  e32/m8 save layout is essential.
+- In-process threads still crash at VA 0x10/0x0 (StarryOS thread/TLS startup);
+  multi-process is the stable scaling path.
+
+## Rollback
+Previous working kernel: runs/board/starryos-working-2026-10-26.bin
